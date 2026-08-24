@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Carré Côté - Plan interactif</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #eeeeee;
+        }
+
+        .plan-container {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            margin: 30px auto;
+        }
+
+        .plan {
+            width: 100%;
+            display: block;
+        }
+
+        /* PASTILLES */
+
+        .hotspot {
+            position: absolute;
+
+            width: 24px;
+            height: 24px;
+
+            border-radius: 50%;
+
+            border: 3px solid white;
+
+            cursor: pointer;
+
+            transform: translate(-50%, -50%);
+
+            box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+
+            transition: transform 0.15s;
+        }
+
+        .hotspot:hover {
+            transform: translate(-50%, -50%) scale(1.25);
+        }
+
+        .vasque {
+            background: #4d8acb;
+        }
+
+        .wc {
+            background: #d9534f;
+        }
+
+        .douche {
+            background: #4caf7a;
+        }
+
+          .sol-mur {
+            background: #df9629;
+        }
+        /* FENÊTRE D'INFORMATION */
+
+        .info-box {
+
+            display: none;
+
+            position: fixed;
+
+            top: 50%;
+            left: 50%;
+
+            transform: translate(-50%, -50%);
+
+            width: 380px;
+
+            max-width: 90%;
+
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 12px;
+
+            box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+
+            z-index: 1000;
+        }
+
+        .info-box h2 {
+            margin-top: 0;
+        }
+
+        .close {
+            position: absolute;
+
+            right: 15px;
+            top: 10px;
+
+            font-size: 24px;
+
+            cursor: pointer;
+        }
+
+        .overlay {
+
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(0,0,0,0.35);
+
+            z-index: 999;
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+<div class="plan-container">
+
+    <img
+        src="PCG AYREM - RDC ind2 - 2026-07-02.png"
+        class="plan"
+        alt="Plan RDC"
+    >
+
+
+    <!-- VASQUE -->
+
+    <div
+        class="hotspot vasque"
+        style="left: 55%; top: 30%;"
+        onclick="showInfo('vasque')"
+        title="Vasque"
+    ></div>
+
+
+    <!-- WC -->
+
+    <div
+        class="hotspot wc"
+        style="left: 58%; top: 25%;"
+        onclick="showInfo('wc')"
+        title="WC"
+    ></div>
+
+
+    <!-- DOUCHE -->
+
+    <div
+        class="hotspot douche"
+        style="left: 56%; top: 26%;"
+        onclick="showInfo('douche')"
+        title="Douche"
+    ></div>
+
+
+     <!-- SOL et MUR -->
+
+    <div
+        class="hotspot sol-mur"
+        style="left: 58%; top: 30%;"
+        onclick="showInfo('sol-mur')"
+        title="Sol et mur"
+    ></div>
+</div>
+
+
+<!-- FOND SOMBRE -->
+
+<div
+    class="overlay"
+    id="overlay"
+    onclick="closeInfo()"
+></div>
+
+
+<!-- FENÊTRE -->
+
+<div
+    class="info-box"
+    id="infoBox"
+>
+
+    <span
+        class="close"
+        onclick="closeInfo()"
+    >
+        ×
+    </span>
+
+
+    <div id="infoContent"></div>
+
+</div>
+
+
+<script>
+
+function showInfo(type) {
+
+    let content = "";
+
+    if (type === "vasque") {
+
+        content = `
+
+            <h2>Vasque — SDB 01</h2>
+
+            <h3>Meuble</h3>
+
+            <p>
+                Meuble vasque 120 cm<br>
+                Fabricant : XXX<br>
+                Référence : XXX
+            </p>
+
+            <h3>Vasque</h3>
+
+            <p>
+                Vasque à poser<br>
+                Fabricant : XXX<br>
+                Référence : XXX
+            </p>
+
+            <h3>Mitigeur</h3>
+
+            <p>
+                Mitigeur lavabo<br>
+                Fabricant : XXX<br>
+                Référence : XXX
+            </p>
+
+            <h3>Miroir</h3>
+
+            <p>
+                Miroir 120 × 80 cm<br>
+                Référence : XXX
+            </p>
+
+        `;
+
+    }
+
+
+    if (type === "wc") {
+
+        content = `
+
+            <h2>WC — SDB 01</h2>
+
+            <h3>Bâti-support</h3>
+
+            <p>
+                Fabricant : XXX<br>
+                Modèle : XXX<br>
+                Référence : XXX
+            </p>
+
+            <h3>Cuvette suspendue</h3>
+
+            <p>
+                Fabricant : XXX<br>
+                Modèle : XXX<br>
+                Référence : XXX
+            </p>
+
+            <h3>Plaque de commande</h3>
+
+            <p>
+                Fabricant : XXX<br>
+                Modèle : XXX<br>
+                Finition : XXX
+            </p>
+
+        `;
+
+    }
+
+
+    if (type === "douche") {
+
+        content = `
+
+            <h2>Douche — SDB 01</h2>
+
+            <h3>Receveur</h3>
+
+            <p>
+                Receveur 120 × 90 cm<br>
+                Fabricant : XXX<br>
+                Référence : XXX
+            </p>
+
+            <h3>Mitigeur</h3>
+
+            <p>
+                Fabricant : XXX<br>
+                Référence : XXX
+            </p>
+
+            <h3>Colonne de douche</h3>
+
+            <p>
+                Fabricant : XXX<br>
+                Référence : XXX
+            </p>
+
+            <h3>Faïence</h3>
+
+            <p>
+                Fabricant : XXX<br>
+                Référence : XXX<br>
+                Format : 60 × 120 cm
+            </p>
+
+        `;
+
+    }
+
+
+     if (type === "sol-mur") {
+
+        content = `
+
+            <h2>Sol et mur — SDB 01</h2>
+
+            <h3>Carrelage</h3>
+
+            <p>
+                Carrelage 60 × 60 cm<br>
+                Fabricant : XXX<br>
+                Référence : XXX
+            </p>
+
+            <h3>Faïence</h3>
+
+            <p>
+                Faïence douche 60 x 120
+                Fabricant : XXX<br>
+                Référence : XXX
+            </p>
+
+            <h3>Crédence</h3>
+
+            <p>
+                Crédence meuble vasque 10 x 10
+                Fabricant : XXX<br>
+                Référence : XXX
+            </p>
+            
+        `;
+
+    }
+
+    document.getElementById("infoContent").innerHTML = content;
+
+    document.getElementById("infoBox").style.display = "block";
+
+    document.getElementById("overlay").style.display = "block";
+}
+
+
+function closeInfo() {
+
+    document.getElementById("infoBox").style.display = "none";
+
+    document.getElementById("overlay").style.display = "none";
+
+}
+
+</script>
+
+
+</body>
+</html>
