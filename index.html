@@ -28,28 +28,49 @@
 
         /* PASTILLES */
 
-        .hotspot {
-            position: absolute;
+.hotspot {
+    position: absolute;
 
-            width: 1%;
-            height: 1%;
+    /* Taille adaptée automatiquement à l'écran */
+    width: clamp(14px, 2vw, 24px);
+    height: clamp(14px, 2vw, 24px);
 
-            border-radius: 50%;
+    border-radius: 50%;
 
-            border: 1px solid rgb(255, 255, 255);
+    border: 2px solid white;
 
-            cursor: pointer;
+    cursor: pointer;
 
-            transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 
-            // box-shadow: 0 2px 8px rgba(0,0,0,0.35);//
+    transition: transform 0.15s ease;
 
-            transition: transform 0.15s;
-        }
+    /* Zone de clic confortable sur téléphone */
+    touch-action: manipulation;
 
-        .hotspot:hover {
-            transform: translate(-50%, -50%) scale(1.25);
-        }
+    /* Évite les effets de sélection */
+    user-select: none;
+    -webkit-user-select: none;
+
+    /* Permet de garder la pastille au-dessus du plan */
+    z-index: 10;
+}
+
+.hotspot:hover {
+    transform: translate(-50%, -50%) scale(1.25);
+}
+
+/* Téléphone */
+@media (max-width: 600px) {
+
+    .hotspot {
+        width: 18px;
+        height: 18px;
+
+        border-width: 2px;
+    }
+
+}
 
         .vasque {
             background: #4d8acb;
@@ -66,10 +87,13 @@
           .sol-mur {
             background: #df9629;
         }
+        
+        
         /* FENÊTRE D'INFORMATION */
 
-       .info-box {
+.info-box {
     display: none;
+
     position: fixed;
 
     top: 50%;
@@ -78,11 +102,14 @@
     transform: translate(-50%, -50%);
 
     width: 420px;
-    max-width: calc(100vw - 40px);
 
-    max-height: calc(100vh - 40px);
+    /* La fenêtre ne dépassera jamais de l'écran */
+    max-width: calc(100vw - 30px);
+    max-height: calc(100vh - 30px);
 
+    /* Défilement vertical si le contenu est trop long */
     overflow-y: auto;
+    overflow-x: hidden;
 
     background: white;
 
@@ -95,21 +122,30 @@
     z-index: 1000;
 
     box-sizing: border-box;
+
+    /* Améliore le défilement sur téléphone */
+    -webkit-overflow-scrolling: touch;
 }
 
 @media (max-width: 600px) {
 
     .info-box {
+
         width: calc(100vw - 20px);
         max-width: calc(100vw - 20px);
 
         max-height: calc(100vh - 20px);
 
-        padding: 15px;
+        padding: 16px;
 
-        border-radius: 8px;
+        border-radius: 10px;
+
+        /* Défilement vertical */
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        -webkit-overflow-scrolling: touch;
     }
-
 
     .info-box h2 {
         font-size: 20px;
@@ -123,8 +159,8 @@
         font-size: 14px;
         line-height: 1.4;
     }
-
 }
+
 
         .info-box h2 {
             margin-top: 0;
