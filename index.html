@@ -3,368 +3,374 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"
+>
 
-    <title>Carré Côté - Plan interactif</title>
+<title>Carré Côté - Plan interactif</title>
 
+<style>
 
-    <style>
+/* =========================================================
+   PAGE
+   ========================================================= */
 
-        /* =====================================================
-           PAGE
-           ===================================================== */
+html,
+body {
 
-        html,
-        body {
+    margin: 0;
+    padding: 0;
 
-            margin: 0;
-            padding: 0;
+    width: 100%;
+    height: 100%;
 
-            font-family: Arial, sans-serif;
+    font-family: Arial, sans-serif;
 
-            background: #eeeeee;
+    background: #eeeeee;
 
-        }
+    overflow: hidden;
 
+}
 
-        /* =====================================================
-           PLAN
-           ===================================================== */
 
-        .plan-container {
+/* =========================================================
+   ZONE DE VISUALISATION
+   ========================================================= */
 
-            position: relative;
+.viewer {
 
-            width: 100%;
+    position: fixed;
 
-            max-width: 1400px;
+    inset: 0;
 
-            margin: 0 auto;
+    overflow: hidden;
 
-        }
+    background: #eeeeee;
 
+    touch-action: none;
 
-        .plan {
+}
 
-            width: 100%;
 
-            height: auto;
+/* =========================================================
+   CONTENEUR DU PLAN
+   ========================================================= */
 
-            display: block;
+.plan-container {
 
-        }
+    position: absolute;
 
+    left: 0;
+    top: 0;
 
-        /* =====================================================
-           PASTILLES
-           ===================================================== */
+    transform-origin: 0 0;
 
-        .hotspot {
+    will-change: transform;
 
-            position: absolute;
+}
 
-            width: 1%;
 
-            aspect-ratio: 1 / 1;
+/* =========================================================
+   IMAGE
+   ========================================================= */
 
-            border-radius: 50%;
+.plan {
 
-            border: 1px solid white;
+    display: block;
 
-            cursor: pointer;
+    width: 100%;
 
-            transform:
-                translate(-50%, -50%);
+    height: auto;
 
-            transition:
-                transform 0.15s ease;
+    user-select: none;
 
-            z-index: 10;
+    -webkit-user-select: none;
 
-            touch-action: manipulation;
+    pointer-events: none;
 
-            user-select: none;
+}
 
-            -webkit-user-select: none;
 
-        }
+/* =========================================================
+   PASTILLES
+   ========================================================= */
 
+.hotspot {
 
-        /* Survol uniquement sur ordinateur */
+    position: absolute;
 
-        @media (hover: hover) {
+    width: 1%;
 
-            .hotspot:hover {
+    aspect-ratio: 1 / 1;
 
-                transform:
-                    translate(-50%, -50%)
-                    scale(1.5);
+    border-radius: 50%;
 
-            }
+    border: 1px solid white;
 
-        }
+    cursor: pointer;
 
+    transform:
+        translate(-50%, -50%);
 
-        /* =====================================================
-           COULEURS DES PASTILLES
-           ===================================================== */
+    z-index: 20;
 
-        .vasque {
+    touch-action: manipulation;
 
-            background: #4d8acb;
+    box-sizing: border-box;
 
-        }
+}
 
 
-        .wc {
+/* Survol uniquement PC */
 
-            background: #d9534f;
+@media (hover: hover) {
 
-        }
+    .hotspot:hover {
 
+        transform:
+            translate(-50%, -50%)
+            scale(1.5);
 
-        .douche {
+    }
 
-            background: #4caf7a;
+}
 
-        }
 
+/* =========================================================
+   COULEURS
+   ========================================================= */
 
-        .sol-mur {
+.vasque {
 
-            background: #df9629;
+    background: #4d8acb;
 
-        }
+}
 
 
-        /* =====================================================
-           FENÊTRE D'INFORMATION
-           ===================================================== */
+.wc {
 
-        .info-box {
+    background: #d9534f;
 
-            display: none;
+}
 
-            position: fixed;
 
-            width: 450px;
+.douche {
 
-            max-width:
-                calc(100vw - 30px);
+    background: #4caf7a;
 
-            max-height:
-                calc(100vh - 30px);
+}
 
-            overflow-y: auto;
 
-            overflow-x: hidden;
+.sol-mur {
 
-            background: white;
+    background: #df9629;
 
-            padding: 25px;
+}
 
-            border-radius: 12px;
 
-            box-sizing: border-box;
+/* =========================================================
+   FENÊTRE D'INFORMATION
+   ========================================================= */
 
-            box-shadow:
-                0 10px 40px
-                rgba(0, 0, 0, 0.25);
+.info-box {
 
-            z-index: 1000;
+    display: none;
 
-            -webkit-overflow-scrolling: touch;
+    position: fixed;
 
-            /*
-             * Autorise le défilement vertical
-             * dans la fiche sur téléphone.
-             */
+    width: 450px;
 
-            touch-action: pan-y;
+    max-width:
+        calc(100vw - 30px);
 
-        }
+    max-height:
+        calc(100vh - 30px);
 
+    padding: 25px;
 
-        /* =====================================================
-           TITRES
-           ===================================================== */
+    box-sizing: border-box;
 
-        .info-box h2 {
+    background: white;
 
-            margin-top: 0;
+    border-radius: 12px;
 
-            padding-right: 30px;
+    box-shadow:
+        0 10px 40px
+        rgba(0,0,0,0.25);
 
-            font-size: 22px;
+    z-index: 1000;
 
-        }
+    overflow-y: auto;
 
+    overflow-x: hidden;
 
-        .info-box h3 {
+    -webkit-overflow-scrolling: touch;
 
-            margin-top: 20px;
+    touch-action: pan-y;
 
-            margin-bottom: 6px;
+}
 
-            font-size: 16px;
 
-        }
+/* =========================================================
+   TITRES
+   ========================================================= */
 
+.info-box h2 {
 
-        .info-box p {
+    margin-top: 0;
 
-            margin-top: 0;
+    padding-right: 30px;
 
-            line-height: 1.5;
+    font-size: 22px;
 
-            font-size: 14px;
+}
 
-        }
 
+.info-box h3 {
 
-        /* =====================================================
-           BOUTON FERMER
-           ===================================================== */
+    margin-top: 20px;
 
-        .close {
+    margin-bottom: 6px;
 
-            position: absolute;
+    font-size: 16px;
 
-            right: 15px;
+}
 
-            top: 10px;
 
-            width: 30px;
+.info-box p {
 
-            height: 30px;
+    margin-top: 0;
 
-            font-size: 25px;
+    line-height: 1.5;
 
-            line-height: 30px;
+    font-size: 14px;
 
-            text-align: center;
+}
 
-            cursor: pointer;
 
-            color: #333;
+/* =========================================================
+   FERMER
+   ========================================================= */
 
-            z-index: 10;
+.close {
 
-            touch-action: manipulation;
+    position: absolute;
 
-        }
+    right: 12px;
 
+    top: 8px;
 
-        /* =====================================================
-           TABLETTE
-           ===================================================== */
+    width: 30px;
 
-        @media (max-width: 900px) {
+    height: 30px;
 
-            .info-box {
+    line-height: 30px;
 
-                width: 360px;
+    text-align: center;
 
-                max-width:
-                    calc(100vw - 30px);
+    font-size: 25px;
 
-                max-height:
-                    calc(100vh - 30px);
+    cursor: pointer;
 
-                padding: 20px;
+    z-index: 10;
 
-            }
+}
 
 
-            .info-box h2 {
+/* =========================================================
+   TABLETTE
+   ========================================================= */
 
-                font-size: 20px;
+@media (max-width: 900px) {
 
-            }
+    .info-box {
 
+        width: 360px;
 
-            .info-box h3 {
+        max-height:
+            calc(100vh - 30px);
 
-                font-size: 15px;
+        padding: 20px;
 
-            }
+    }
 
 
-            .info-box p {
+    .info-box h2 {
 
-                font-size: 14px;
+        font-size: 20px;
 
-            }
+    }
 
-        }
 
+    .info-box h3 {
 
-        /* =====================================================
-           TELEPHONE
-           ===================================================== */
+        font-size: 15px;
 
-        @media (max-width: 600px) {
+    }
 
-            .info-box {
 
-                width: 280px;
+    .info-box p {
 
-                max-width:
-                    calc(100vw - 20px);
+        font-size: 14px;
 
-                max-height:
-                    calc(100vh - 20px);
+    }
 
-                padding: 16px;
+}
 
-                border-radius: 10px;
 
-            }
+/* =========================================================
+   TELEPHONE
+   ========================================================= */
 
+@media (max-width: 600px) {
 
-            .info-box h2 {
+    .info-box {
 
-                font-size: 18px;
+        width: 280px;
 
-            }
+        max-width:
+            calc(100vw - 20px);
 
+        max-height:
+            calc(100vh - 20px);
 
-            .info-box h3 {
+        padding: 16px;
 
-                font-size: 14px;
+        border-radius: 10px;
 
-                margin-top: 16px;
+    }
 
-            }
 
+    .info-box h2 {
 
-            .info-box p {
+        font-size: 18px;
 
-                font-size: 13px;
+    }
 
-                line-height: 1.4;
 
-            }
+    .info-box h3 {
 
+        font-size: 14px;
 
-            .close {
+        margin-top: 16px;
 
-                right: 10px;
+    }
 
-                top: 8px;
 
-                font-size: 22px;
+    .info-box p {
 
-            }
+        font-size: 13px;
 
-        }
+        line-height: 1.4;
 
-    </style>
+    }
+
+}
+
+</style>
 
 </head>
 
@@ -373,67 +379,70 @@
 
 
 <!-- =========================================================
-     PLAN
+     ZONE DE ZOOM
      ========================================================= -->
 
-<div class="plan-container">
+<div
+    class="viewer"
+    id="viewer"
+>
 
 
-    <img
-        src="PCG AYREM - RDC ind2 - 2026-07-02.png"
-        class="plan"
-        id="plan"
-        alt="Plan RDC"
+    <div
+        class="plan-container"
+        id="planContainer"
     >
 
 
-    <!-- =====================================================
-         VASQUE
-         ===================================================== -->
-
-    <div
-        class="hotspot vasque"
-        style="left: 55%; top: 30%;"
-        onclick="showInfo('vasque', this)"
-        title="Vasque"
-    ></div>
+        <img
+            src="PCG AYREM - RDC ind2 - 2026-07-02.png"
+            class="plan"
+            id="plan"
+            alt="Plan RDC"
+        >
 
 
-    <!-- =====================================================
-         WC
-         ===================================================== -->
+        <!-- VASQUE -->
 
-    <div
-        class="hotspot wc"
-        style="left: 58%; top: 25%;"
-        onclick="showInfo('wc', this)"
-        title="WC"
-    ></div>
+        <div
+            class="hotspot vasque"
+            style="left:55%; top:30%;"
+            onclick="showInfo('vasque', this)"
+            title="Vasque"
+        ></div>
 
 
-    <!-- =====================================================
-         DOUCHE
-         ===================================================== -->
+        <!-- WC -->
 
-    <div
-        class="hotspot douche"
-        style="left: 56%; top: 26%;"
-        onclick="showInfo('douche', this)"
-        title="Douche"
-    ></div>
+        <div
+            class="hotspot wc"
+            style="left:58%; top:25%;"
+            onclick="showInfo('wc', this)"
+            title="WC"
+        ></div>
 
 
-    <!-- =====================================================
-         SOL ET MUR
-         ===================================================== -->
+        <!-- DOUCHE -->
 
-    <div
-        class="hotspot sol-mur"
-        style="left: 58%; top: 30%;"
-        onclick="showInfo('sol-mur', this)"
-        title="Sol et mur"
-    ></div>
+        <div
+            class="hotspot douche"
+            style="left:56%; top:26%;"
+            onclick="showInfo('douche', this)"
+            title="Douche"
+        ></div>
 
+
+        <!-- SOL / MUR -->
+
+        <div
+            class="hotspot sol-mur"
+            style="left:58%; top:30%;"
+            onclick="showInfo('sol-mur', this)"
+            title="Sol et mur"
+        ></div>
+
+
+    </div>
 
 </div>
 
@@ -456,7 +465,9 @@
     </span>
 
 
-    <div id="infoContent"></div>
+    <div
+        id="infoContent"
+    ></div>
 
 </div>
 
@@ -465,19 +476,454 @@
 <script>
 
 
-/* ============================================================
+/* =========================================================
+   VARIABLES DU ZOOM
+   ========================================================= */
+
+const viewer =
+    document.getElementById("viewer");
+
+
+const planContainer =
+    document.getElementById("planContainer");
+
+
+const plan =
+    document.getElementById("plan");
+
+
+let scale = 1;
+
+let translateX = 0;
+
+let translateY = 0;
+
+
+let startDistance = 0;
+
+let startScale = 1;
+
+let startX = 0;
+
+let startY = 0;
+
+let startTranslateX = 0;
+
+let startTranslateY = 0;
+
+
+/*
+ * Limites du zoom
+ */
+
+const MIN_SCALE = 1;
+
+const MAX_SCALE = 4;
+
+
+/* =========================================================
+   APPLICATION DU ZOOM
+   ========================================================= */
+
+function applyTransform() {
+
+    planContainer.style.transform =
+        "translate(" +
+        translateX +
+        "px, " +
+        translateY +
+        "px) scale(" +
+        scale +
+        ")";
+
+}
+
+
+/* =========================================================
+   DISTANCE ENTRE DEUX DOIGTS
+   ========================================================= */
+
+function getDistance(touch1, touch2) {
+
+    const dx =
+        touch2.clientX -
+        touch1.clientX;
+
+    const dy =
+        touch2.clientY -
+        touch1.clientY;
+
+    return Math.sqrt(
+        dx * dx +
+        dy * dy
+    );
+
+}
+
+
+/* =========================================================
+   CENTRE ENTRE DEUX DOIGTS
+   ========================================================= */
+
+function getTouchCenter(touch1, touch2) {
+
+    return {
+
+        x:
+            (
+                touch1.clientX +
+                touch2.clientX
+            ) / 2,
+
+        y:
+            (
+                touch1.clientY +
+                touch2.clientY
+            ) / 2
+
+    };
+
+}
+
+
+/* =========================================================
+   GESTION DU TOUCH
+   ========================================================= */
+
+viewer.addEventListener(
+    "touchstart",
+    function(event) {
+
+
+        /*
+         * Deux doigts = zoom
+         */
+
+        if (
+            event.touches.length === 2
+        ) {
+
+            startDistance =
+                getDistance(
+                    event.touches[0],
+                    event.touches[1]
+                );
+
+            startScale =
+                scale;
+
+            return;
+
+        }
+
+
+        /*
+         * Un doigt = déplacement
+         */
+
+        if (
+            event.touches.length === 1
+        ) {
+
+            startX =
+                event.touches[0].clientX;
+
+            startY =
+                event.touches[0].clientY;
+
+            startTranslateX =
+                translateX;
+
+            startTranslateY =
+                translateY;
+
+        }
+
+    },
+    {
+        passive: false
+    }
+);
+
+
+
+viewer.addEventListener(
+    "touchmove",
+    function(event) {
+
+
+        /*
+         * Zoom à deux doigts
+         */
+
+        if (
+            event.touches.length === 2
+        ) {
+
+            event.preventDefault();
+
+
+            const distance =
+                getDistance(
+                    event.touches[0],
+                    event.touches[1]
+                );
+
+
+            const center =
+                getTouchCenter(
+                    event.touches[0],
+                    event.touches[1]
+                );
+
+
+            if (
+                startDistance === 0
+            ) {
+
+                return;
+
+            }
+
+
+            let newScale =
+                startScale *
+                (
+                    distance /
+                    startDistance
+                );
+
+
+            /*
+             * Limites
+             */
+
+            newScale =
+                Math.max(
+                    MIN_SCALE,
+                    Math.min(
+                        MAX_SCALE,
+                        newScale
+                    )
+                );
+
+
+            /*
+             * Coordonnées du point
+             * sous les doigts avant zoom.
+             */
+
+            const worldX =
+                (
+                    center.x -
+                    startTranslateX
+                ) /
+                startScale;
+
+
+            const worldY =
+                (
+                    center.y -
+                    startTranslateY
+                ) /
+                startScale;
+
+
+            /*
+             * Conservation du point
+             * sous les doigts.
+             */
+
+            translateX =
+                center.x -
+                worldX *
+                newScale;
+
+
+            translateY =
+                center.y -
+                worldY *
+                newScale;
+
+
+            scale =
+                newScale;
+
+
+            applyTransform();
+
+            return;
+
+        }
+
+
+        /*
+         * Déplacement à un doigt
+         */
+
+        if (
+            event.touches.length === 1
+        ) {
+
+            event.preventDefault();
+
+
+            const dx =
+                event.touches[0].clientX -
+                startX;
+
+
+            const dy =
+                event.touches[0].clientY -
+                startY;
+
+
+            translateX =
+                startTranslateX +
+                dx;
+
+
+            translateY =
+                startTranslateY +
+                dy;
+
+
+            applyTransform();
+
+        }
+
+    },
+    {
+        passive: false
+    }
+);
+
+
+
+viewer.addEventListener(
+    "touchend",
+    function() {
+
+        startDistance = 0;
+
+    }
+);
+
+
+
+/* =========================================================
+   ZOOM À LA MOLETTE SUR ORDINATEUR
+   ========================================================= */
+
+viewer.addEventListener(
+    "wheel",
+    function(event) {
+
+
+        /*
+         * Ctrl + molette
+         * ou molette seule
+         */
+
+        event.preventDefault();
+
+
+        const rect =
+            viewer.getBoundingClientRect();
+
+
+        const mouseX =
+            event.clientX -
+            rect.left;
+
+
+        const mouseY =
+            event.clientY -
+            rect.top;
+
+
+        const oldScale =
+            scale;
+
+
+        const zoomFactor =
+            event.deltaY < 0
+                ? 1.15
+                : 0.87;
+
+
+        let newScale =
+            oldScale *
+            zoomFactor;
+
+
+        newScale =
+            Math.max(
+                MIN_SCALE,
+                Math.min(
+                    MAX_SCALE,
+                    newScale
+                )
+            );
+
+
+        /*
+         * Point du plan sous la souris
+         */
+
+        const worldX =
+            (
+                mouseX -
+                translateX
+            ) /
+            oldScale;
+
+
+        const worldY =
+            (
+                mouseY -
+                translateY
+            ) /
+            oldScale;
+
+
+        /*
+         * Conservation du point
+         */
+
+        translateX =
+            mouseX -
+            worldX *
+            newScale;
+
+
+        translateY =
+            mouseY -
+            worldY *
+            newScale;
+
+
+        scale =
+            newScale;
+
+
+        applyTransform();
+
+    },
+    {
+        passive: false
+    }
+);
+
+
+/* =========================================================
    CONTENU DES FICHES
-   ============================================================ */
+   ========================================================= */
 
 function getInfoContent(type) {
 
-
     let content = "";
 
-
-    /* ========================================================
-       VASQUE
-       ======================================================== */
 
     if (type === "vasque") {
 
@@ -513,6 +959,7 @@ function getInfoContent(type) {
 
             <p>
                 Miroir 120 × 80 cm<br>
+                Fabricant : XXX<br>
                 Référence : XXX
             </p>
 
@@ -520,10 +967,6 @@ function getInfoContent(type) {
 
     }
 
-
-    /* ========================================================
-       WC
-       ======================================================== */
 
     if (type === "wc") {
 
@@ -559,10 +1002,6 @@ function getInfoContent(type) {
 
     }
 
-
-    /* ========================================================
-       DOUCHE
-       ======================================================== */
 
     if (type === "douche") {
 
@@ -605,10 +1044,6 @@ function getInfoContent(type) {
     }
 
 
-    /* ========================================================
-       SOL ET MUR
-       ======================================================== */
-
     if (type === "sol-mur") {
 
         content = `
@@ -649,10 +1084,9 @@ function getInfoContent(type) {
 }
 
 
-
-/* ============================================================
-   OUVERTURE DE LA FICHE
-   ============================================================ */
+/* =========================================================
+   OUVERTURE D'UNE FICHE
+   ========================================================= */
 
 function showInfo(type, hotspot) {
 
@@ -670,7 +1104,7 @@ function showInfo(type, hotspot) {
 
 
     /*
-     * Chargement du contenu
+     * Contenu
      */
 
     infoContent.innerHTML =
@@ -678,10 +1112,7 @@ function showInfo(type, hotspot) {
 
 
     /*
-     * Affichage temporaire.
-     *
-     * Cela permet de connaître
-     * les dimensions réelles de la fiche.
+     * Affichage
      */
 
     infoBox.style.display =
@@ -689,19 +1120,24 @@ function showInfo(type, hotspot) {
 
 
     /*
-     * On positionne la fiche
-     * par rapport à la pastille.
+     * On attend que le navigateur
+     * ait calculé les dimensions.
      */
 
-    positionInfoBox(hotspot);
+    requestAnimationFrame(
+        function() {
+
+            positionInfoBox(hotspot);
+
+        }
+    );
 
 }
 
 
-
-/* ============================================================
-   POSITIONNEMENT DE LA FICHE PAR RAPPORT À LA PASTILLE
-   ============================================================ */
+/* =========================================================
+   POSITIONNEMENT DE LA FICHE
+   ========================================================= */
 
 function positionInfoBox(hotspot) {
 
@@ -714,23 +1150,15 @@ function positionInfoBox(hotspot) {
 
     /*
      * Position réelle de la pastille
-     * à l'écran.
+     * dans l'écran.
      *
-     * IMPORTANT :
-     *
-     * getBoundingClientRect()
-     * tient compte du zoom et du
-     * déplacement effectué par
-     * l'utilisateur.
+     * Cette méthode tient compte
+     * du zoom du plan.
      */
 
-    const hotspotRect =
+    const rect =
         hotspot.getBoundingClientRect();
 
-
-    /*
-     * Dimensions de la fiche.
-     */
 
     const boxWidth =
         infoBox.offsetWidth;
@@ -740,11 +1168,6 @@ function positionInfoBox(hotspot) {
         infoBox.offsetHeight;
 
 
-    /*
-     * Dimensions de la fenêtre
-     * réellement visible.
-     */
-
     const viewportWidth =
         window.innerWidth;
 
@@ -753,46 +1176,40 @@ function positionInfoBox(hotspot) {
         window.innerHeight;
 
 
-    /*
-     * Espace entre la pastille
-     * et la fiche.
-     */
-
     const gap = 15;
 
 
     /*
-     * Centre de la pastille.
+     * Centre de la pastille
      */
 
-    const hotspotCenterX =
-        hotspotRect.left +
-        hotspotRect.width / 2;
+    const centerX =
+        rect.left +
+        rect.width / 2;
 
 
-    const hotspotCenterY =
-        hotspotRect.top +
-        hotspotRect.height / 2;
-
-
-    /*
-     * ========================================================
-     * POSITION HORIZONTALE
-     * ========================================================
-     */
+    const centerY =
+        rect.top +
+        rect.height / 2;
 
 
     let left;
 
+    let top;
+
+
+    /* =====================================================
+       HORIZONTAL
+       ===================================================== */
+
 
     /*
-     * On essaie d'abord de placer
-     * la fiche à droite.
+     * Priorité :
+     * à droite de la pastille.
      */
 
     if (
-        hotspotCenterX +
-        hotspotRect.width / 2 +
+        rect.right +
         gap +
         boxWidth
         <=
@@ -800,17 +1217,18 @@ function positionInfoBox(hotspot) {
     ) {
 
         left =
-            hotspotRect.right +
+            rect.right +
             gap;
 
     }
 
+
     /*
-     * Sinon, on essaie à gauche.
+     * Sinon à gauche.
      */
 
     else if (
-        hotspotRect.left -
+        rect.left -
         gap -
         boxWidth
         >=
@@ -818,113 +1236,116 @@ function positionInfoBox(hotspot) {
     ) {
 
         left =
-            hotspotRect.left -
+            rect.left -
             gap -
             boxWidth;
 
     }
 
+
     /*
-     * Si elle ne tient ni à droite
-     * ni à gauche, on la centre.
+     * Sinon centrée.
      */
 
     else {
 
         left =
-            (
-                viewportWidth -
-                boxWidth
-            ) / 2;
+            centerX -
+            boxWidth / 2;
 
     }
 
 
-    /*
-     * ========================================================
-     * POSITION VERTICALE
-     * ========================================================
-     */
-
-
-    let top;
+    /* =====================================================
+       VERTICAL
+       ===================================================== */
 
 
     /*
-     * On essaie d'abord d'aligner
-     * le haut de la fiche avec
-     * la pastille.
+     * On centre verticalement
+     * sur la pastille.
      */
 
     top =
-        hotspotCenterY -
+        centerY -
         boxHeight / 2;
 
 
     /*
-     * Si la fiche dépasse en haut,
-     * on la descend.
+     * Marges écran.
+     */
+
+    const margin = 10;
+
+
+    /*
+     * Limite haute.
      */
 
     if (
-        top < 10
+        top < margin
     ) {
 
-        top = 10;
+        top = margin;
 
     }
 
 
     /*
-     * Si elle dépasse en bas,
-     * on la remonte.
+     * Limite basse.
      */
 
     if (
         top +
-        boxHeight >
+        boxHeight
+        >
         viewportHeight -
-        10
+        margin
     ) {
 
         top =
             viewportHeight -
             boxHeight -
-            10;
+            margin;
 
     }
 
 
     /*
-     * Sécurité horizontale.
+     * Limite gauche.
      */
 
     if (
-        left < 10
+        left < margin
     ) {
 
-        left = 10;
+        left = margin;
 
     }
 
 
+    /*
+     * Limite droite.
+     */
+
     if (
         left +
-        boxWidth >
+        boxWidth
+        >
         viewportWidth -
-        10
+        margin
     ) {
 
         left =
             viewportWidth -
             boxWidth -
-            10;
+            margin;
 
     }
 
 
     /*
-     * Application de la position.
+     * Application
      */
 
     infoBox.style.left =
@@ -937,10 +1358,9 @@ function positionInfoBox(hotspot) {
 }
 
 
-
-/* ============================================================
+/* =========================================================
    FERMETURE
-   ============================================================ */
+   ========================================================= */
 
 function closeInfo() {
 
@@ -953,10 +1373,9 @@ function closeInfo() {
 }
 
 
-
-/* ============================================================
-   FERMETURE AVEC LA TOUCHE ESC
-   ============================================================ */
+/* =========================================================
+   TOUCHE ESC
+   ========================================================= */
 
 document.addEventListener(
     "keydown",
@@ -972,6 +1391,70 @@ document.addEventListener(
 
     }
 );
+
+
+/* =========================================================
+   REPOSITIONNEMENT APRÈS REDIMENSIONNEMENT
+   ========================================================= */
+
+window.addEventListener(
+    "resize",
+    function() {
+
+        const infoBox =
+            document.getElementById(
+                "infoBox"
+            );
+
+
+        if (
+            infoBox.style.display ===
+            "block"
+        ) {
+
+            /*
+             * On récupère la dernière
+             * pastille active.
+             */
+
+            if (window.activeHotspot) {
+
+                positionInfoBox(
+                    window.activeHotspot
+                );
+
+            }
+
+        }
+
+    }
+);
+
+
+/*
+ * Mémorisation de la dernière pastille
+ */
+
+const originalShowInfo =
+    showInfo;
+
+
+/*
+ * On remplace showInfo pour
+ * mémoriser la pastille.
+ */
+
+showInfo = function(type, hotspot) {
+
+    window.activeHotspot =
+        hotspot;
+
+    originalShowInfo(
+        type,
+        hotspot
+    );
+
+};
 
 
 </script>
