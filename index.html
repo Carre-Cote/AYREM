@@ -31,13 +31,12 @@
 .hotspot {
     position: absolute;
 
-    /* Taille adaptée automatiquement à l'écran */
-    width: clamp(14px, 2vw, 24px);
-    height: clamp(14px, 2vw, 24px);
+    width: 8px;
+    height: 8px;
 
     border-radius: 50%;
 
-    border: 2px solid white;
+    border: 1px solid white;
 
     cursor: pointer;
 
@@ -45,19 +44,34 @@
 
     transition: transform 0.15s ease;
 
-    /* Zone de clic confortable sur téléphone */
+    z-index: 10;
+
     touch-action: manipulation;
 
-    /* Évite les effets de sélection */
     user-select: none;
     -webkit-user-select: none;
-
-    /* Permet de garder la pastille au-dessus du plan */
-    z-index: 10;
 }
 
+/* Zone invisible autour de la pastille pour faciliter le clic */
+.hotspot::before {
+    content: "";
+
+    position: absolute;
+
+    width: 30px;
+    height: 30px;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    border-radius: 50%;
+}
+
+/* Agrandissement uniquement lorsque la souris passe dessus */
 .hotspot:hover {
-    transform: translate(-50%, -50%) scale(1.25);
+    transform: translate(-50%, -50%) scale(1.5);
 }
 
 /* Téléphone */
