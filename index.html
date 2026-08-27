@@ -66,7 +66,7 @@ body {
 
 
 /* =========================================================
-   CANVAS
+   CANVAS DU PLAN
    ========================================================= */
 
 #planCanvas {
@@ -82,6 +82,23 @@ body {
 
 
 /* =========================================================
+   COUCHE DES PASTILLES
+   ========================================================= */
+
+#hotspotLayer {
+
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 20;
+
+}
+
+
+/* =========================================================
    PASTILLES
    ========================================================= */
 
@@ -90,14 +107,23 @@ body {
     position: absolute;
 
     /*
-     * TAILLE VISUELLE CONSTANTE
+     * TAILLE VISUELLE FIXE.
      *
-     * Elle ne dépend plus du zoom.
+     * Elle ne dépend absolument pas
+     * du zoom du plan.
      */
 
     width: 12px;
 
     height: 12px;
+
+    min-width: 12px;
+
+    min-height: 12px;
+
+    max-width: 12px;
+
+    max-height: 12px;
 
     border-radius: 50%;
 
@@ -110,24 +136,16 @@ body {
     transform:
         translate(-50%, -50%);
 
-    z-index: 20;
-
-    /*
-     * Évite les comportements
-     * tactiles indésirables.
-     */
+    pointer-events: auto;
 
     touch-action: manipulation;
 
 }
 
 
-/*
- * Zone invisible autour de la pastille.
- *
- * La pastille reste petite,
- * mais la zone cliquable est plus grande.
- */
+/* =========================================================
+   ZONE TACTILE
+   ========================================================= */
 
 .hotspot::before {
 
@@ -313,6 +331,23 @@ body {
 
 @media (max-width: 900px) {
 
+    .hotspot {
+
+        width: 11px;
+
+        height: 11px;
+
+        min-width: 11px;
+
+        min-height: 11px;
+
+        max-width: 11px;
+
+        max-height: 11px;
+
+    }
+
+
     .info-box {
 
         width: 360px;
@@ -345,20 +380,6 @@ body {
 
     }
 
-
-    /*
-     * Pastille légèrement plus petite
-     * sur tablette.
-     */
-
-    .hotspot {
-
-        width: 11px;
-
-        height: 11px;
-
-    }
-
 }
 
 
@@ -367,6 +388,23 @@ body {
    ========================================================= */
 
 @media (max-width: 600px) {
+
+    .hotspot {
+
+        width: 10px;
+
+        height: 10px;
+
+        min-width: 10px;
+
+        min-height: 10px;
+
+        max-width: 10px;
+
+        max-height: 10px;
+
+    }
+
 
     .info-box {
 
@@ -409,19 +447,6 @@ body {
 
     }
 
-
-    /*
-     * Pastilles téléphone.
-     */
-
-    .hotspot {
-
-        width: 10px;
-
-        height: 10px;
-
-    }
-
 }
 
 </style>
@@ -433,7 +458,7 @@ body {
 
 
 <!-- =========================================================
-     ZONE DU PLAN
+     PLAN
      ========================================================= -->
 
 <div id="viewer">
@@ -444,9 +469,15 @@ body {
     ></canvas>
 
 
-    <!-- =====================================================
-         PASTILLES
-         ===================================================== -->
+</div>
+
+
+
+<!-- =========================================================
+     COUCHE INDÉPENDANTE DES PASTILLES
+     ========================================================= -->
+
+<div id="hotspotLayer">
 
 
     <div
@@ -538,6 +569,12 @@ const ctx =
     );
 
 
+const hotspotLayer =
+    document.getElementById(
+        "hotspotLayer"
+    );
+
+
 const image =
     new Image();
 
@@ -547,7 +584,7 @@ image.src =
 
 
 /* =========================================================
-   VARIABLES
+   VARIABLES DU PLAN
    ========================================================= */
 
 let imageWidth = 0;
@@ -567,24 +604,31 @@ let dpr =
     window.devicePixelRatio || 1;
 
 
-/*
- * Zoom.
- */
+/* =========================================================
+   ZOOM
+   ========================================================= */
 
 const MIN_SCALE = 0.05;
 
 const MAX_SCALE = 5;
 
 
-/*
- * Animation.
- */
+/* =========================================================
+   RAF
+   ========================================================= */
 
 let animationRequested = false;
 
 
 /* =========================================================
-   CHARGEMENT
+   HOTSPOT ACTIF
+   ========================================================= */
+
+window.activeHotspot = null;
+
+
+/* =========================================================
+   CHARGEMENT IMAGE
    ========================================================= */
 
 image.onload =
@@ -611,7 +655,7 @@ image.onload =
 
 
 /* =========================================================
-   CANVAS
+   REDIMENSIONNEMENT CANVAS
    ========================================================= */
 
 function resizeCanvas() {
@@ -710,16 +754,11 @@ function fitPlan() {
 
 
 /* =========================================================
-   DEMANDE DE RAFRAÎCHISSEMENT
+   DEMANDE DE DESSIN
    ========================================================= */
 
 function requestDraw() {
 
-
-    /*
-     * On évite de lancer plusieurs
-     * dessins simultanément.
-     */
 
     if (
         animationRequested
@@ -750,7 +789,7 @@ function requestDraw() {
 
 
 /* =========================================================
-   DESSIN
+   DESSIN DU PLAN
    ========================================================= */
 
 function draw() {
@@ -773,7 +812,7 @@ function draw() {
 
 
     /*
-     * Dessin de l'image originale.
+     * Image originale.
      */
 
     ctx.drawImage(
@@ -792,7 +831,8 @@ function draw() {
 
 
     /*
-     * Mise à jour des pastilles.
+     * Les pastilles sont mises
+     * à jour séparément.
      */
 
     updateHotspots();
@@ -830,7 +870,8 @@ function updateHotspots() {
 
 
             /*
-             * Position dans l'image.
+             * Coordonnées originales
+             * dans l'image.
              */
 
             const imageX =
@@ -846,7 +887,7 @@ function updateHotspots() {
 
 
             /*
-             * Position sur l'écran.
+             * Conversion en coordonnées écran.
              */
 
             const screenX =
@@ -862,11 +903,10 @@ function updateHotspots() {
 
 
             /*
-             * Important :
-             * on utilise des pixels écran.
+             * La couche des pastilles
+             * est fixe à l'écran.
              *
-             * La taille de la pastille
-             * ne dépend donc plus du zoom.
+             * Seule leur position change.
              */
 
             hotspot.style.left =
@@ -897,6 +937,11 @@ function zoomAt(
         scale;
 
 
+    /*
+     * Coordonnée du point
+     * dans l'image.
+     */
+
     const imageX =
         (
             screenX -
@@ -913,15 +958,27 @@ function zoomAt(
         oldScale;
 
 
+    /*
+     * Nouvelle échelle.
+     */
+
     scale =
         Math.max(
+
             MIN_SCALE,
+
             Math.min(
                 MAX_SCALE,
                 newScale
             )
+
         );
 
+
+    /*
+     * Conservation du point
+     * sous le curseur.
+     */
 
     offsetX =
         screenX -
@@ -956,7 +1013,7 @@ let startOffsetY = 0;
 
 
 /* =========================================================
-   SOURIS — DÉBUT
+   SOURIS — DOWN
    ========================================================= */
 
 viewer.addEventListener(
@@ -966,17 +1023,6 @@ viewer.addEventListener(
 
         if (
             event.button !== 0
-        ) {
-
-            return;
-
-        }
-
-
-        if (
-            event.target.classList.contains(
-                "hotspot"
-            )
         ) {
 
             return;
@@ -1012,7 +1058,7 @@ viewer.addEventListener(
 
 
 /* =========================================================
-   SOURIS — DÉPLACEMENT
+   SOURIS — MOVE
    ========================================================= */
 
 window.addEventListener(
@@ -1052,7 +1098,7 @@ window.addEventListener(
 
 
 /* =========================================================
-   SOURIS — FIN
+   SOURIS — UP
    ========================================================= */
 
 window.addEventListener(
@@ -1108,7 +1154,8 @@ viewer.addEventListener(
 
             mouseY,
 
-            scale * factor
+            scale *
+            factor
 
         );
 
@@ -1142,7 +1189,7 @@ let pinchScale = 1;
 
 
 /* =========================================================
-   DISTANCE
+   DISTANCE ENTRE DEUX DOIGTS
    ========================================================= */
 
 function getTouchDistance(
@@ -1169,7 +1216,7 @@ function getTouchDistance(
 
 
 /* =========================================================
-   CENTRE
+   CENTRE ENTRE DEUX DOIGTS
    ========================================================= */
 
 function getTouchCenter(
@@ -1197,7 +1244,7 @@ function getTouchCenter(
 
 
 /* =========================================================
-   TOUCH — DÉBUT
+   TOUCH — START
    ========================================================= */
 
 viewer.addEventListener(
@@ -1206,7 +1253,8 @@ viewer.addEventListener(
 
 
         /*
-         * Deux doigts.
+         * Deux doigts :
+         * début du zoom.
          */
 
         if (
@@ -1238,23 +1286,13 @@ viewer.addEventListener(
 
 
         /*
-         * Un doigt.
+         * Un doigt :
+         * déplacement.
          */
 
         if (
             event.touches.length === 1
         ) {
-
-
-            if (
-                event.target.classList.contains(
-                    "hotspot"
-                )
-            ) {
-
-                return;
-
-            }
 
 
             touchMode =
@@ -1286,7 +1324,7 @@ viewer.addEventListener(
 
 
 /* =========================================================
-   TOUCH — MOUVEMENT
+   TOUCH — MOVE
    ========================================================= */
 
 viewer.addEventListener(
@@ -1298,7 +1336,7 @@ viewer.addEventListener(
 
 
         /*
-         * PINCEMENT
+         * ZOOM DEUX DOIGTS
          */
 
         if (
@@ -1329,11 +1367,6 @@ viewer.addEventListener(
             const rect =
                 viewer.getBoundingClientRect();
 
-
-            /*
-             * Zoom autour du centre
-             * des deux doigts.
-             */
 
             zoomAt(
 
@@ -1399,7 +1432,7 @@ viewer.addEventListener(
 
 
 /* =========================================================
-   TOUCH — FIN
+   TOUCH — END
    ========================================================= */
 
 viewer.addEventListener(
@@ -1628,7 +1661,7 @@ function showInfo(
 
 
 /* =========================================================
-   POSITION DE LA FICHE
+   POSITIONNEMENT FICHE
    ========================================================= */
 
 function positionInfoBox(
@@ -1735,7 +1768,7 @@ function positionInfoBox(
 
 
     /*
-     * CENTRE VERTICAL
+     * CENTRAGE VERTICAL
      */
 
     top =
@@ -1744,7 +1777,7 @@ function positionInfoBox(
 
 
     /*
-     * Limites écran.
+     * LIMITES
      */
 
     if (
@@ -1808,7 +1841,7 @@ function positionInfoBox(
 
 
 /* =========================================================
-   FERMETURE
+   FERMER FICHE
    ========================================================= */
 
 function closeInfo() {
@@ -1835,6 +1868,11 @@ window.addEventListener(
 
         requestDraw();
 
+
+        /*
+         * La fiche reste attachée
+         * à sa pastille.
+         */
 
         if (
             window.activeHotspot &&
