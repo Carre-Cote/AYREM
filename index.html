@@ -17,28 +17,39 @@
 
         /* =========================
            PAGE
-        ========================= */
+           ========================= */
 
+        html,
         body {
             margin: 0;
+            padding: 0;
+
             font-family: Arial, sans-serif;
+
             background: #eeeeee;
         }
 
 
         /* =========================
            PLAN
-        ========================= */
+           ========================= */
 
         .plan-container {
+
             position: relative;
+
             width: 100%;
+
             max-width: 1400px;
+
             margin: 0 auto;
         }
 
+
         .plan {
+
             width: 100%;
+
             display: block;
         }
 
@@ -52,6 +63,7 @@
             position: absolute;
 
             width: 1%;
+
             aspect-ratio: 1 / 1;
 
             border-radius: 50%;
@@ -60,32 +72,32 @@
 
             cursor: pointer;
 
-            transform: translate(-50%, -50%);
+            transform:
+                translate(-50%, -50%);
 
-            transition: transform 0.15s ease;
+            transition:
+                transform 0.15s ease;
 
             z-index: 10;
 
             touch-action: manipulation;
 
             user-select: none;
+
             -webkit-user-select: none;
         }
 
-
-        /* Effet au survol sur ordinateur */
 
         .hotspot:hover {
 
             transform:
                 translate(-50%, -50%)
                 scale(1.5);
-
         }
 
 
         /* =========================
-           COULEURS DES PASTILLES
+           COULEURS
            ========================= */
 
         .vasque {
@@ -113,19 +125,16 @@
 
             display: none;
 
-            /*
-             * La fenêtre est attachée
-             * au plan et non à l'écran.
-             */
-            position: absolute;
+            position: fixed;
 
             width: 450px;
 
-            max-width: 400px;
+            max-width: 450px;
 
             max-height: 500px;
 
             overflow-y: auto;
+
             overflow-x: hidden;
 
             background: white;
@@ -135,13 +144,21 @@
             border-radius: 12px;
 
             box-shadow:
-                0 8px 30px rgba(0,0,0,0.25);
+                0 8px 30px
+                rgba(0,0,0,0.25);
 
             z-index: 1000;
 
             box-sizing: border-box;
 
             -webkit-overflow-scrolling: touch;
+
+            /*
+             * Permet d'annuler visuellement
+             * le zoom du navigateur.
+             */
+
+            transform-origin: top left;
         }
 
 
@@ -154,26 +171,23 @@
             margin-top: 0;
 
             padding-right: 25px;
-
         }
 
 
         .info-box h3 {
 
             margin-bottom: 6px;
-
         }
 
 
         .info-box p {
 
             line-height: 1.5;
-
         }
 
 
         /* =========================
-           BOUTON FERMER
+           FERMETURE
            ========================= */
 
         .close {
@@ -181,6 +195,7 @@
             position: absolute;
 
             right: 15px;
+
             top: 10px;
 
             font-size: 24px;
@@ -188,7 +203,6 @@
             cursor: pointer;
 
             line-height: 1;
-
         }
 
 
@@ -207,32 +221,27 @@
                 max-height: 450px;
 
                 padding: 20px;
-
             }
 
             .info-box h2 {
 
                 font-size: 20px;
-
             }
 
             .info-box h3 {
 
                 font-size: 15px;
-
             }
 
             .info-box p {
 
                 font-size: 14px;
-
             }
-
         }
 
 
         /* =========================
-           TÉLÉPHONE
+           TELEPHONE
            ========================= */
 
         @media (max-width: 600px) {
@@ -248,21 +257,16 @@
                 padding: 16px;
 
                 border-radius: 10px;
-
             }
 
             .info-box h2 {
 
                 font-size: 18px;
-
             }
 
             .info-box h3 {
 
                 font-size: 14px;
-
-                margin-bottom: 5px;
-
             }
 
             .info-box p {
@@ -270,7 +274,6 @@
                 font-size: 13px;
 
                 line-height: 1.4;
-
             }
 
             .close {
@@ -280,9 +283,7 @@
                 top: 9px;
 
                 font-size: 22px;
-
             }
-
         }
 
     </style>
@@ -300,8 +301,6 @@
 <div class="plan-container">
 
 
-    <!-- IMAGE DU PLAN -->
-
     <img
         src="PCG AYREM - RDC ind2 - 2026-07-02.png"
         class="plan"
@@ -309,9 +308,7 @@
     >
 
 
-    <!-- =================================================
-         PASTILLE VASQUE
-         ================================================= -->
+    <!-- VASQUE -->
 
     <div
         class="hotspot vasque"
@@ -321,9 +318,7 @@
     ></div>
 
 
-    <!-- =================================================
-         PASTILLE WC
-         ================================================= -->
+    <!-- WC -->
 
     <div
         class="hotspot wc"
@@ -333,9 +328,7 @@
     ></div>
 
 
-    <!-- =================================================
-         PASTILLE DOUCHE
-         ================================================= -->
+    <!-- DOUCHE -->
 
     <div
         class="hotspot douche"
@@ -345,9 +338,7 @@
     ></div>
 
 
-    <!-- =================================================
-         PASTILLE SOL ET MUR
-         ================================================= -->
+    <!-- SOL ET MUR -->
 
     <div
         class="hotspot sol-mur"
@@ -357,46 +348,46 @@
     ></div>
 
 
-    <!-- =================================================
-         FENÊTRE D'INFORMATION
-         ================================================= -->
+</div>
 
-    <div
-        class="info-box"
-        id="infoBox"
+
+<!-- =====================================================
+     FENÊTRE D'INFORMATION
+     ===================================================== -->
+
+<div
+    class="info-box"
+    id="infoBox"
+>
+
+    <span
+        class="close"
+        onclick="closeInfo()"
     >
+        ×
+    </span>
 
-        <span
-            class="close"
-            onclick="closeInfo()"
-        >
-            ×
-        </span>
-
-        <div id="infoContent"></div>
-
-    </div>
-
+    <div id="infoContent"></div>
 
 </div>
+
 
 
 <script>
 
 
 /* =====================================================
-   OUVERTURE D'UNE FICHE
+   CONTENU DES FICHES
    ===================================================== */
 
-function showInfo(type, hotspot) {
-
+function getInfoContent(type) {
 
     let content = "";
 
 
-    /* =================================================
+    /* =========================
        VASQUE
-       ================================================= */
+       ========================= */
 
     if (type === "vasque") {
 
@@ -440,9 +431,9 @@ function showInfo(type, hotspot) {
     }
 
 
-    /* =================================================
+    /* =========================
        WC
-       ================================================= */
+       ========================= */
 
     if (type === "wc") {
 
@@ -479,9 +470,9 @@ function showInfo(type, hotspot) {
     }
 
 
-    /* =================================================
+    /* =========================
        DOUCHE
-       ================================================= */
+       ========================= */
 
     if (type === "douche") {
 
@@ -524,9 +515,9 @@ function showInfo(type, hotspot) {
     }
 
 
-    /* =================================================
+    /* =========================
        SOL ET MUR
-       ================================================= */
+       ========================= */
 
     if (type === "sol-mur") {
 
@@ -563,160 +554,278 @@ function showInfo(type, hotspot) {
     }
 
 
-    /* =================================================
-       AFFICHAGE DU CONTENU
-       ================================================= */
+    return content;
+}
+
+
+
+/* =====================================================
+   OUVERTURE DE LA FICHE
+   ===================================================== */
+
+function showInfo(type, hotspot) {
+
 
     const infoBox =
         document.getElementById("infoBox");
+
 
     const infoContent =
         document.getElementById("infoContent");
 
 
-    infoContent.innerHTML = content;
+    /* Contenu */
+
+    infoContent.innerHTML =
+        getInfoContent(type);
 
 
-    /* Affichage temporaire pour connaître
-       les dimensions de la fenêtre */
+    /*
+     * On remet la transformation à zéro
+     * avant de mesurer la fenêtre.
+     */
 
-    infoBox.style.display = "block";
+    infoBox.style.transform =
+        "scale(1)";
 
 
-    /* =================================================
-       CALCUL DE LA POSITION
-       ================================================= */
+    infoBox.style.display =
+        "block";
 
-    const hotspotLeft =
-        hotspot.offsetLeft;
 
-    const hotspotTop =
-        hotspot.offsetTop;
+    /*
+     * Dimensions du viewport réel
+     */
 
+    const viewport =
+        window.visualViewport;
+
+
+    const viewportWidth =
+        viewport
+            ? viewport.width
+            : window.innerWidth;
+
+
+    const viewportHeight =
+        viewport
+            ? viewport.height
+            : window.innerHeight;
+
+
+    const viewportLeft =
+        viewport
+            ? viewport.offsetLeft
+            : 0;
+
+
+    const viewportTop =
+        viewport
+            ? viewport.offsetTop
+            : 0;
+
+
+    /*
+     * Niveau de zoom du téléphone
+     */
+
+    const scale =
+        viewport
+            ? viewport.scale
+            : 1;
+
+
+    /*
+     * Dimensions naturelles
+     * de la fenêtre.
+     */
 
     const boxWidth =
         infoBox.offsetWidth;
+
 
     const boxHeight =
         infoBox.offsetHeight;
 
 
-    const container =
-        document.querySelector(".plan-container");
+    /*
+     * Position de la pastille
+     * dans le viewport.
+     */
+
+    const hotspotRect =
+        hotspot.getBoundingClientRect();
 
 
-    const containerWidth =
-        container.offsetWidth;
+    /*
+     * Position de la pastille
+     * réellement visible à l'écran.
+     */
 
-    const containerHeight =
-        container.offsetHeight;
+    const hotspotX =
+        hotspotRect.left +
+        hotspotRect.width / 2;
+
+
+    const hotspotY =
+        hotspotRect.top +
+        hotspotRect.height / 2;
+
+
+    /*
+     * Marge autour de la fiche.
+     */
+
+    const margin = 15;
+
+
+    let x;
+
+    let y;
 
 
     /* =================================================
-       POSITION HORIZONTALE
+       CHOIX DU CÔTÉ HORIZONTAL
        ================================================= */
 
-    let left;
-
-
     if (
-        hotspotLeft +
+        hotspotX +
         boxWidth +
-        30 <
-        containerWidth
+        margin <
+        viewportWidth
     ) {
 
-        /* À droite de la pastille */
+        /*
+         * La fiche tient à droite.
+         */
 
-        left =
-            hotspotLeft + 20;
+        x =
+            hotspotX + 15;
 
     }
 
     else {
 
-        /* À gauche de la pastille */
+        /*
+         * Sinon elle passe à gauche.
+         */
 
-        left =
-            hotspotLeft -
+        x =
+            hotspotX -
             boxWidth -
-            20;
+            15;
 
     }
 
 
     /* =================================================
-       POSITION VERTICALE
+       CHOIX DU CÔTÉ VERTICAL
        ================================================= */
-
-    let top;
-
 
     if (
-        hotspotTop +
+        hotspotY +
         boxHeight +
-        30 <
-        containerHeight
+        margin <
+        viewportHeight
     ) {
 
-        /* Sous la pastille */
+        /*
+         * La fiche tient dessous.
+         */
 
-        top =
-            hotspotTop + 20;
+        y =
+            hotspotY + 15;
 
     }
 
     else {
 
-        /* Au-dessus de la pastille */
+        /*
+         * Sinon elle passe au-dessus.
+         */
 
-        top =
-            hotspotTop -
+        y =
+            hotspotY -
             boxHeight -
-            20;
+            15;
 
     }
 
 
-    /* =================================================
-       ÉVITER QUE LA FENÊTRE SORTE DU PLAN
-       ================================================= */
+    /*
+     * On s'assure qu'elle ne sorte
+     * pas du viewport.
+     */
 
-    left =
+    x =
         Math.max(
-            10,
+            margin,
             Math.min(
-                left,
-                containerWidth -
+                x,
+                viewportWidth -
                 boxWidth -
-                10
+                margin
             )
         );
 
 
-    top =
+    y =
         Math.max(
-            10,
+            margin,
             Math.min(
-                top,
-                containerHeight -
+                y,
+                viewportHeight -
                 boxHeight -
-                10
+                margin
             )
         );
 
 
-    /* =================================================
-       APPLICATION DE LA POSITION
-       ================================================= */
+    /*
+     * Application de la position.
+     */
 
     infoBox.style.left =
-        left + "px";
+        (
+            x +
+            viewportLeft
+        ) + "px";
+
 
     infoBox.style.top =
-        top + "px";
+        (
+            y +
+            viewportTop
+        ) + "px";
+
+
+    /*
+     * Compensation du zoom.
+     *
+     * Si le téléphone est zoomé à 200 %,
+     * la fiche est affichée à 50 % de sa
+     * taille CSS afin de conserver une
+     * taille physique raisonnable.
+     */
+
+    if (scale > 1) {
+
+        infoBox.style.transform =
+            "scale(" +
+            (1 / scale) +
+            ")";
+
+    }
+
+    else {
+
+        infoBox.style.transform =
+            "scale(1)";
+
+    }
 
 }
+
 
 
 /* =====================================================
@@ -731,6 +840,49 @@ function closeInfo() {
 
 }
 
+
+
+/* =====================================================
+   RECALCUL LORSQUE LE ZOOM CHANGE
+   ===================================================== */
+
+if (window.visualViewport) {
+
+    window.visualViewport.addEventListener(
+        "resize",
+        function() {
+
+            /*
+             * Si une fiche est ouverte,
+             * on la recalcule.
+             */
+
+            const infoBox =
+                document.getElementById(
+                    "infoBox"
+                );
+
+
+            if (
+                infoBox.style.display ===
+                "block"
+            ) {
+
+                /*
+                 * On ferme/recalcule
+                 * uniquement lors d'un
+                 * changement de viewport.
+                 */
+
+                infoBox.style.display =
+                    "none";
+
+            }
+
+        }
+    );
+
+}
 
 </script>
 
