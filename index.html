@@ -1,12 +1,23 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Carré Côté - Plan interactif</title>
 
+
     <style>
+
+        /* =========================
+           PAGE
+        ========================= */
 
         body {
             margin: 0;
@@ -14,48 +25,68 @@
             background: #eeeeee;
         }
 
-.plan-container {
-    position: relative;
-    width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
-}
+
+        /* =========================
+           PLAN
+        ========================= */
+
+        .plan-container {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
         .plan {
             width: 100%;
             display: block;
         }
 
-        /* PASTILLES */
 
-.hotspot {
-    position: absolute;
+        /* =========================
+           PASTILLES
+           ========================= */
 
-    width: 1%;
-    aspect-ratio: 1 / 1;
+        .hotspot {
 
-    border-radius: 50%;
+            position: absolute;
 
-    border: 1px solid white;
+            width: 1%;
+            aspect-ratio: 1 / 1;
 
-    cursor: pointer;
+            border-radius: 50%;
 
-    transform: translate(-50%, -50%);
+            border: 1px solid white;
 
-    transition: transform 0.15s ease;
+            cursor: pointer;
 
-    z-index: 10;
+            transform: translate(-50%, -50%);
 
-    touch-action: manipulation;
-}
+            transition: transform 0.15s ease;
 
-/* Effet au survol sur ordinateur */
-.hotspot:hover {
-    transform: translate(-50%, -50%) scale(1.5);
-}
+            z-index: 10;
+
+            touch-action: manipulation;
+
+            user-select: none;
+            -webkit-user-select: none;
+        }
 
 
+        /* Effet au survol sur ordinateur */
 
+        .hotspot:hover {
+
+            transform:
+                translate(-50%, -50%)
+                scale(1.5);
+
+        }
+
+
+        /* =========================
+           COULEURS DES PASTILLES
+           ========================= */
 
         .vasque {
             background: #4d8acb;
@@ -69,84 +100,84 @@
             background: #4caf7a;
         }
 
-          .sol-mur {
+        .sol-mur {
             background: #df9629;
         }
-        
-        
-        /* FENÊTRE D'INFORMATION */
-
-.info-box {
-    display: none;
-
-    position: fixed;
-
-    top: 50%;
-    left: 50%;
-
-    transform: translate(-50%, -50%);
-
-    /* Taille principale */
-    width: 450px;
-
-    /* Adaptation aux écrans plus petits */
-    max-width: calc(100vw - 40px);
-
-    /* Empêche la fenêtre de sortir verticalement */
-    max-height: calc(100vh - 40px);
-
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    background: white;
-
-    padding: 25px;
-
-    border-radius: 12px;
-
-    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
-
-    z-index: 1000;
-
-    box-sizing: border-box;
-
-    -webkit-overflow-scrolling: touch;
-}
-
-@media (max-width: 600px) {
-
-    .info-box {
-        width: calc(100vw - 20px);
-
-        max-width: calc(100vw - 20px);
-
-        max-height: calc(100vh - 20px);
-
-        padding: 18px;
-
-        border-radius: 10px;
-    }
-
-    .info-box h2 {
-        font-size: 20px;
-    }
-
-    .info-box h3 {
-        font-size: 15px;
-    }
-
-    .info-box p {
-        font-size: 14px;
-        line-height: 1.4;
-    }
-}
 
 
-        .info-box h2 {
-            margin-top: 0;
+        /* =========================
+           FENÊTRE D'INFORMATION
+           ========================= */
+
+        .info-box {
+
+            display: none;
+
+            /*
+             * La fenêtre est attachée
+             * au plan et non à l'écran.
+             */
+            position: absolute;
+
+            width: 450px;
+
+            max-width: 400px;
+
+            max-height: 500px;
+
+            overflow-y: auto;
+            overflow-x: hidden;
+
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 8px 30px rgba(0,0,0,0.25);
+
+            z-index: 1000;
+
+            box-sizing: border-box;
+
+            -webkit-overflow-scrolling: touch;
         }
 
+
+        /* =========================
+           TITRES
+           ========================= */
+
+        .info-box h2 {
+
+            margin-top: 0;
+
+            padding-right: 25px;
+
+        }
+
+
+        .info-box h3 {
+
+            margin-bottom: 6px;
+
+        }
+
+
+        .info-box p {
+
+            line-height: 1.5;
+
+        }
+
+
+        /* =========================
+           BOUTON FERMER
+           ========================= */
+
         .close {
+
             position: absolute;
 
             right: 15px;
@@ -155,28 +186,121 @@
             font-size: 24px;
 
             cursor: pointer;
+
+            line-height: 1;
+
         }
 
-        .overlay {
 
-            display: none;
+        /* =========================
+           TABLETTE
+           ========================= */
 
-            position: fixed;
+        @media (max-width: 900px) {
 
-            inset: 0;
+            .info-box {
 
-            background: rgba(0,0,0,0.35);
+                width: 340px;
 
-            z-index: 999;
+                max-width: 340px;
+
+                max-height: 450px;
+
+                padding: 20px;
+
+            }
+
+            .info-box h2 {
+
+                font-size: 20px;
+
+            }
+
+            .info-box h3 {
+
+                font-size: 15px;
+
+            }
+
+            .info-box p {
+
+                font-size: 14px;
+
+            }
+
+        }
+
+
+        /* =========================
+           TÉLÉPHONE
+           ========================= */
+
+        @media (max-width: 600px) {
+
+            .info-box {
+
+                width: 280px;
+
+                max-width: 280px;
+
+                max-height: 350px;
+
+                padding: 16px;
+
+                border-radius: 10px;
+
+            }
+
+            .info-box h2 {
+
+                font-size: 18px;
+
+            }
+
+            .info-box h3 {
+
+                font-size: 14px;
+
+                margin-bottom: 5px;
+
+            }
+
+            .info-box p {
+
+                font-size: 13px;
+
+                line-height: 1.4;
+
+            }
+
+            .close {
+
+                right: 12px;
+
+                top: 9px;
+
+                font-size: 22px;
+
+            }
+
         }
 
     </style>
+
 </head>
+
 
 <body>
 
 
+<!-- =====================================================
+     PLAN
+     ===================================================== -->
+
 <div class="plan-container">
+
+
+    <!-- IMAGE DU PLAN -->
 
     <img
         src="PCG AYREM - RDC ind2 - 2026-07-02.png"
@@ -185,81 +309,94 @@
     >
 
 
-    <!-- VASQUE -->
+    <!-- =================================================
+         PASTILLE VASQUE
+         ================================================= -->
 
     <div
         class="hotspot vasque"
         style="left: 55%; top: 30%;"
-        onclick="showInfo('vasque')"
+        onclick="showInfo('vasque', this)"
         title="Vasque"
     ></div>
 
 
-    <!-- WC -->
+    <!-- =================================================
+         PASTILLE WC
+         ================================================= -->
 
     <div
         class="hotspot wc"
         style="left: 58%; top: 25%;"
-        onclick="showInfo('wc')"
+        onclick="showInfo('wc', this)"
         title="WC"
     ></div>
 
 
-    <!-- DOUCHE -->
+    <!-- =================================================
+         PASTILLE DOUCHE
+         ================================================= -->
 
     <div
         class="hotspot douche"
         style="left: 56%; top: 26%;"
-        onclick="showInfo('douche')"
+        onclick="showInfo('douche', this)"
         title="Douche"
     ></div>
 
 
-     <!-- SOL et MUR -->
+    <!-- =================================================
+         PASTILLE SOL ET MUR
+         ================================================= -->
 
     <div
         class="hotspot sol-mur"
         style="left: 58%; top: 30%;"
-        onclick="showInfo('sol-mur')"
+        onclick="showInfo('sol-mur', this)"
         title="Sol et mur"
     ></div>
-</div>
 
 
-<!-- FOND SOMBRE -->
+    <!-- =================================================
+         FENÊTRE D'INFORMATION
+         ================================================= -->
 
-<div
-    class="overlay"
-    id="overlay"
-    onclick="closeInfo()"
-></div>
-
-
-<!-- FENÊTRE -->
-
-<div
-    class="info-box"
-    id="infoBox"
->
-
-    <span
-        class="close"
-        onclick="closeInfo()"
+    <div
+        class="info-box"
+        id="infoBox"
     >
-        ×
-    </span>
 
+        <span
+            class="close"
+            onclick="closeInfo()"
+        >
+            ×
+        </span>
 
-    <div id="infoContent"></div>
+        <div id="infoContent"></div>
+
+    </div>
+
 
 </div>
 
 
 <script>
 
-function showInfo(type) {
+
+/* =====================================================
+   OUVERTURE D'UNE FICHE
+   ===================================================== */
+
+function showInfo(type, hotspot) {
+
 
     let content = "";
+
+
+    /* =================================================
+       VASQUE
+       ================================================= */
 
     if (type === "vasque") {
 
@@ -303,6 +440,10 @@ function showInfo(type) {
     }
 
 
+    /* =================================================
+       WC
+       ================================================= */
+
     if (type === "wc") {
 
         content = `
@@ -337,6 +478,10 @@ function showInfo(type) {
 
     }
 
+
+    /* =================================================
+       DOUCHE
+       ================================================= */
 
     if (type === "douche") {
 
@@ -379,7 +524,11 @@ function showInfo(type) {
     }
 
 
-     if (type === "sol-mur") {
+    /* =================================================
+       SOL ET MUR
+       ================================================= */
+
+    if (type === "sol-mur") {
 
         content = `
 
@@ -396,7 +545,7 @@ function showInfo(type) {
             <h3>Faïence</h3>
 
             <p>
-                Faïence douche 60 x 120
+                Faïence douche 60 × 120 cm<br>
                 Fabricant : XXX<br>
                 Référence : XXX
             </p>
@@ -404,33 +553,188 @@ function showInfo(type) {
             <h3>Crédence</h3>
 
             <p>
-                Crédence meuble vasque 10 x 10
+                Crédence meuble vasque 10 × 10 cm<br>
                 Fabricant : XXX<br>
                 Référence : XXX
             </p>
-            
+
         `;
 
     }
 
-    document.getElementById("infoContent").innerHTML = content;
 
-    document.getElementById("infoBox").style.display = "block";
+    /* =================================================
+       AFFICHAGE DU CONTENU
+       ================================================= */
 
-    document.getElementById("overlay").style.display = "block";
+    const infoBox =
+        document.getElementById("infoBox");
+
+    const infoContent =
+        document.getElementById("infoContent");
+
+
+    infoContent.innerHTML = content;
+
+
+    /* Affichage temporaire pour connaître
+       les dimensions de la fenêtre */
+
+    infoBox.style.display = "block";
+
+
+    /* =================================================
+       CALCUL DE LA POSITION
+       ================================================= */
+
+    const hotspotLeft =
+        hotspot.offsetLeft;
+
+    const hotspotTop =
+        hotspot.offsetTop;
+
+
+    const boxWidth =
+        infoBox.offsetWidth;
+
+    const boxHeight =
+        infoBox.offsetHeight;
+
+
+    const container =
+        document.querySelector(".plan-container");
+
+
+    const containerWidth =
+        container.offsetWidth;
+
+    const containerHeight =
+        container.offsetHeight;
+
+
+    /* =================================================
+       POSITION HORIZONTALE
+       ================================================= */
+
+    let left;
+
+
+    if (
+        hotspotLeft +
+        boxWidth +
+        30 <
+        containerWidth
+    ) {
+
+        /* À droite de la pastille */
+
+        left =
+            hotspotLeft + 20;
+
+    }
+
+    else {
+
+        /* À gauche de la pastille */
+
+        left =
+            hotspotLeft -
+            boxWidth -
+            20;
+
+    }
+
+
+    /* =================================================
+       POSITION VERTICALE
+       ================================================= */
+
+    let top;
+
+
+    if (
+        hotspotTop +
+        boxHeight +
+        30 <
+        containerHeight
+    ) {
+
+        /* Sous la pastille */
+
+        top =
+            hotspotTop + 20;
+
+    }
+
+    else {
+
+        /* Au-dessus de la pastille */
+
+        top =
+            hotspotTop -
+            boxHeight -
+            20;
+
+    }
+
+
+    /* =================================================
+       ÉVITER QUE LA FENÊTRE SORTE DU PLAN
+       ================================================= */
+
+    left =
+        Math.max(
+            10,
+            Math.min(
+                left,
+                containerWidth -
+                boxWidth -
+                10
+            )
+        );
+
+
+    top =
+        Math.max(
+            10,
+            Math.min(
+                top,
+                containerHeight -
+                boxHeight -
+                10
+            )
+        );
+
+
+    /* =================================================
+       APPLICATION DE LA POSITION
+       ================================================= */
+
+    infoBox.style.left =
+        left + "px";
+
+    infoBox.style.top =
+        top + "px";
+
 }
 
+
+/* =====================================================
+   FERMETURE
+   ===================================================== */
 
 function closeInfo() {
 
-    document.getElementById("infoBox").style.display = "none";
-
-    document.getElementById("overlay").style.display = "none";
+    document.getElementById(
+        "infoBox"
+    ).style.display = "none";
 
 }
+
 
 </script>
 
 
 </body>
+
 </html>
