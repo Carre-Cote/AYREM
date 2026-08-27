@@ -152,20 +152,13 @@
 
             position: fixed;
 
-            /*
-             * Taille de référence.
-             * Le JavaScript va ensuite compenser
-             * automatiquement le zoom du navigateur.
-             */
             width: 450px;
 
-            max-width: 450px;
+            max-width:
+                calc(100vw - 30px);
 
-            /*
-             * La hauteur sera également adaptée
-             * dynamiquement.
-             */
-            max-height: 500px;
+            max-height:
+                calc(100vh - 30px);
 
             overflow-y: auto;
 
@@ -185,15 +178,13 @@
 
             z-index: 1000;
 
-            /*
-             * Défilement fluide sur téléphone.
-             */
             -webkit-overflow-scrolling: touch;
 
             /*
-             * Autorise uniquement le défilement
-             * vertical dans la fiche.
+             * Autorise le défilement vertical
+             * dans la fiche sur téléphone.
              */
+
             touch-action: pan-y;
 
         }
@@ -279,9 +270,11 @@
 
                 width: 360px;
 
-                max-width: 360px;
+                max-width:
+                    calc(100vw - 30px);
 
-                max-height: 450px;
+                max-height:
+                    calc(100vh - 30px);
 
                 padding: 20px;
 
@@ -321,9 +314,11 @@
 
                 width: 280px;
 
-                max-width: 280px;
+                max-width:
+                    calc(100vw - 20px);
 
-                max-height: 400px;
+                max-height:
+                    calc(100vh - 20px);
 
                 padding: 16px;
 
@@ -399,7 +394,7 @@
     <div
         class="hotspot vasque"
         style="left: 55%; top: 30%;"
-        onclick="showInfo('vasque')"
+        onclick="showInfo('vasque', this)"
         title="Vasque"
     ></div>
 
@@ -411,7 +406,7 @@
     <div
         class="hotspot wc"
         style="left: 58%; top: 25%;"
-        onclick="showInfo('wc')"
+        onclick="showInfo('wc', this)"
         title="WC"
     ></div>
 
@@ -423,7 +418,7 @@
     <div
         class="hotspot douche"
         style="left: 56%; top: 26%;"
-        onclick="showInfo('douche')"
+        onclick="showInfo('douche', this)"
         title="Douche"
     ></div>
 
@@ -435,7 +430,7 @@
     <div
         class="hotspot sol-mur"
         style="left: 58%; top: 30%;"
-        onclick="showInfo('sol-mur')"
+        onclick="showInfo('sol-mur', this)"
         title="Sol et mur"
     ></div>
 
@@ -475,6 +470,7 @@
    ============================================================ */
 
 function getInfoContent(type) {
+
 
     let content = "";
 
@@ -655,108 +651,10 @@ function getInfoContent(type) {
 
 
 /* ============================================================
-   OBTENIR LE NIVEAU DE ZOOM DU NAVIGATEUR
-   ============================================================ */
-
-function getBrowserZoom() {
-
-    /*
-     * visualViewport.scale donne le niveau
-     * de zoom visuel sur les navigateurs
-     * mobiles modernes.
-     */
-
-    if (window.visualViewport) {
-
-        return window.visualViewport.scale || 1;
-
-    }
-
-
-    /*
-     * Valeur de secours.
-     */
-
-    return 1;
-
-}
-
-
-
-/* ============================================================
-   DIMENSIONS DE BASE DE LA FICHE
-   ============================================================ */
-
-function getInfoDimensions() {
-
-
-    const screenWidth =
-        document.documentElement.clientWidth;
-
-
-    const screenHeight =
-        document.documentElement.clientHeight;
-
-
-    /*
-     * Taille souhaitée selon l'écran.
-     */
-
-    let width;
-    let height;
-
-
-    if (screenWidth <= 600) {
-
-        width = 280;
-
-        height =
-            Math.min(
-                400,
-                screenHeight - 20
-            );
-
-    }
-
-    else if (screenWidth <= 900) {
-
-        width = 360;
-
-        height =
-            Math.min(
-                450,
-                screenHeight - 30
-            );
-
-    }
-
-    else {
-
-        width = 450;
-
-        height =
-            Math.min(
-                500,
-                screenHeight - 30
-            );
-
-    }
-
-
-    return {
-        width: width,
-        height: height
-    };
-
-}
-
-
-
-/* ============================================================
    OUVERTURE DE LA FICHE
    ============================================================ */
 
-function showInfo(type) {
+function showInfo(type, hotspot) {
 
 
     const infoBox =
@@ -772,7 +670,7 @@ function showInfo(type) {
 
 
     /*
-     * Contenu
+     * Chargement du contenu
      */
 
     infoContent.innerHTML =
@@ -780,67 +678,10 @@ function showInfo(type) {
 
 
     /*
-     * Niveau de zoom actuel
-     */
-
-    const zoom =
-        getBrowserZoom();
-
-
-    /*
-     * Dimensions souhaitées
-     * pour l'utilisateur.
-     */
-
-    const dimensions =
-        getInfoDimensions();
-
-
-    /*
-     * Compensation du zoom.
+     * Affichage temporaire.
      *
-     * Exemple :
-     *
-     * zoom navigateur = 2
-     *
-     * largeur souhaitée = 280 px
-     *
-     * largeur CSS appliquée = 140 px
-     *
-     * Après le zoom ×2 :
-     *
-     * 140 × 2 = 280 px
-     *
-     * La fiche conserve donc
-     * une taille physique normale.
-     */
-
-    const cssWidth =
-        dimensions.width / zoom;
-
-
-    const cssHeight =
-        dimensions.height / zoom;
-
-
-    /*
-     * Application des dimensions.
-     */
-
-    infoBox.style.width =
-        cssWidth + "px";
-
-
-    infoBox.style.maxWidth =
-        cssWidth + "px";
-
-
-    infoBox.style.maxHeight =
-        cssHeight + "px";
-
-
-    /*
-     * Affichage.
+     * Cela permet de connaître
+     * les dimensions réelles de la fiche.
      */
 
     infoBox.style.display =
@@ -848,20 +689,21 @@ function showInfo(type) {
 
 
     /*
-     * Positionnement.
+     * On positionne la fiche
+     * par rapport à la pastille.
      */
 
-    positionInfoBox();
+    positionInfoBox(hotspot);
 
 }
 
 
 
 /* ============================================================
-   POSITIONNEMENT
+   POSITIONNEMENT DE LA FICHE PAR RAPPORT À LA PASTILLE
    ============================================================ */
 
-function positionInfoBox() {
+function positionInfoBox(hotspot) {
 
 
     const infoBox =
@@ -871,15 +713,23 @@ function positionInfoBox() {
 
 
     /*
-     * Niveau de zoom.
+     * Position réelle de la pastille
+     * à l'écran.
+     *
+     * IMPORTANT :
+     *
+     * getBoundingClientRect()
+     * tient compte du zoom et du
+     * déplacement effectué par
+     * l'utilisateur.
      */
 
-    const zoom =
-        getBrowserZoom();
+    const hotspotRect =
+        hotspot.getBoundingClientRect();
 
 
     /*
-     * Dimensions réelles CSS.
+     * Dimensions de la fiche.
      */
 
     const boxWidth =
@@ -891,79 +741,158 @@ function positionInfoBox() {
 
 
     /*
-     * Dimensions visuelles
-     * du viewport.
+     * Dimensions de la fenêtre
+     * réellement visible.
      */
 
-    let viewportWidth =
+    const viewportWidth =
         window.innerWidth;
 
 
-    let viewportHeight =
+    const viewportHeight =
         window.innerHeight;
 
 
     /*
-     * Sur les navigateurs mobiles,
-     * visualViewport donne la partie
-     * réellement visible.
+     * Espace entre la pastille
+     * et la fiche.
      */
 
-    if (window.visualViewport) {
-
-        viewportWidth =
-            window.visualViewport.width;
+    const gap = 15;
 
 
-        viewportHeight =
-            window.visualViewport.height;
+    /*
+     * Centre de la pastille.
+     */
+
+    const hotspotCenterX =
+        hotspotRect.left +
+        hotspotRect.width / 2;
+
+
+    const hotspotCenterY =
+        hotspotRect.top +
+        hotspotRect.height / 2;
+
+
+    /*
+     * ========================================================
+     * POSITION HORIZONTALE
+     * ========================================================
+     */
+
+
+    let left;
+
+
+    /*
+     * On essaie d'abord de placer
+     * la fiche à droite.
+     */
+
+    if (
+        hotspotCenterX +
+        hotspotRect.width / 2 +
+        gap +
+        boxWidth
+        <=
+        viewportWidth
+    ) {
+
+        left =
+            hotspotRect.right +
+            gap;
+
+    }
+
+    /*
+     * Sinon, on essaie à gauche.
+     */
+
+    else if (
+        hotspotRect.left -
+        gap -
+        boxWidth
+        >=
+        0
+    ) {
+
+        left =
+            hotspotRect.left -
+            gap -
+            boxWidth;
+
+    }
+
+    /*
+     * Si elle ne tient ni à droite
+     * ni à gauche, on la centre.
+     */
+
+    else {
+
+        left =
+            (
+                viewportWidth -
+                boxWidth
+            ) / 2;
 
     }
 
 
     /*
-     * La largeur/hauteur retournée par
-     * visualViewport est exprimée dans
-     * les coordonnées CSS.
+     * ========================================================
+     * POSITION VERTICALE
+     * ========================================================
      */
 
-    let left =
-        (
-            viewportWidth -
-            boxWidth
-        ) / 2;
+
+    let top;
 
 
-    let top =
-        (
+    /*
+     * On essaie d'abord d'aligner
+     * le haut de la fiche avec
+     * la pastille.
+     */
+
+    top =
+        hotspotCenterY -
+        boxHeight / 2;
+
+
+    /*
+     * Si la fiche dépasse en haut,
+     * on la descend.
+     */
+
+    if (
+        top < 10
+    ) {
+
+        top = 10;
+
+    }
+
+
+    /*
+     * Si elle dépasse en bas,
+     * on la remonte.
+     */
+
+    if (
+        top +
+        boxHeight >
+        viewportHeight -
+        10
+    ) {
+
+        top =
             viewportHeight -
-            boxHeight
-        ) / 2;
-
-
-    /*
-     * Décalage éventuel du viewport
-     * lors du zoom.
-     */
-
-    if (window.visualViewport) {
-
-        left +=
-            window.visualViewport.offsetLeft;
-
-
-        top +=
-            window.visualViewport.offsetTop;
+            boxHeight -
+            10;
 
     }
-
-
-    /*
-     * Marges.
-     */
-
-    const margin =
-        10 / zoom;
 
 
     /*
@@ -971,12 +900,10 @@ function positionInfoBox() {
      */
 
     if (
-        left <
-        margin
+        left < 10
     ) {
 
-        left =
-            margin;
+        left = 10;
 
     }
 
@@ -985,49 +912,19 @@ function positionInfoBox() {
         left +
         boxWidth >
         viewportWidth -
-        margin
+        10
     ) {
 
         left =
             viewportWidth -
             boxWidth -
-            margin;
+            10;
 
     }
 
 
     /*
-     * Sécurité verticale.
-     */
-
-    if (
-        top <
-        margin
-    ) {
-
-        top =
-            margin;
-
-    }
-
-
-    if (
-        top +
-        boxHeight >
-        viewportHeight -
-        margin
-    ) {
-
-        top =
-            viewportHeight -
-            boxHeight -
-            margin;
-
-    }
-
-
-    /*
-     * Position finale.
+     * Application de la position.
      */
 
     infoBox.style.left =
@@ -1058,128 +955,18 @@ function closeInfo() {
 
 
 /* ============================================================
-   ADAPTATION AU ZOOM
+   FERMETURE AVEC LA TOUCHE ESC
    ============================================================ */
 
-if (window.visualViewport) {
-
-
-    window.visualViewport.addEventListener(
-        "resize",
-        function() {
-
-
-            const infoBox =
-                document.getElementById(
-                    "infoBox"
-                );
-
-
-            /*
-             * Si la fiche est ouverte,
-             * on recalcule sa taille.
-             */
-
-            if (
-                infoBox.style.display ===
-                "block"
-            ) {
-
-                /*
-                 * On récupère le contenu actuel.
-                 * Il n'est pas modifié.
-                 */
-
-                const zoom =
-                    getBrowserZoom();
-
-
-                const dimensions =
-                    getInfoDimensions();
-
-
-                infoBox.style.width =
-                    (
-                        dimensions.width /
-                        zoom
-                    ) + "px";
-
-
-                infoBox.style.maxWidth =
-                    (
-                        dimensions.width /
-                        zoom
-                    ) + "px";
-
-
-                infoBox.style.maxHeight =
-                    (
-                        dimensions.height /
-                        zoom
-                    ) + "px";
-
-
-                positionInfoBox();
-
-            }
-
-        }
-    );
-
-}
-
-
-
-/* ============================================================
-   REDIMENSIONNEMENT CLASSIQUE
-   ============================================================ */
-
-window.addEventListener(
-    "resize",
-    function() {
-
-
-        const infoBox =
-            document.getElementById(
-                "infoBox"
-            );
-
+document.addEventListener(
+    "keydown",
+    function(event) {
 
         if (
-            infoBox.style.display ===
-            "block"
+            event.key === "Escape"
         ) {
 
-            const zoom =
-                getBrowserZoom();
-
-
-            const dimensions =
-                getInfoDimensions();
-
-
-            infoBox.style.width =
-                (
-                    dimensions.width /
-                    zoom
-                ) + "px";
-
-
-            infoBox.style.maxWidth =
-                (
-                    dimensions.width /
-                    zoom
-                ) + "px";
-
-
-            infoBox.style.maxHeight =
-                (
-                    dimensions.height /
-                    zoom
-                ) + "px";
-
-
-            positionInfoBox();
+            closeInfo();
 
         }
 
