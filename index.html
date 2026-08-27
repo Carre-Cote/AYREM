@@ -28,6 +28,8 @@ body {
     width: 100%;
     height: 100%;
 
+    overflow: hidden;
+
     font-family: Arial, sans-serif;
 
     background: #eeeeee;
@@ -39,7 +41,7 @@ body {
    ZONE DU PLAN
    ========================================================= */
 
-.plan-viewer {
+#viewer {
 
     position: fixed;
 
@@ -56,7 +58,7 @@ body {
 }
 
 
-.plan-viewer.dragging {
+#viewer.dragging {
 
     cursor: grabbing;
 
@@ -64,40 +66,17 @@ body {
 
 
 /* =========================================================
-   CONTENEUR DU PLAN
+   CANVAS
    ========================================================= */
 
-.plan-container {
+#planCanvas {
 
     position: absolute;
 
     left: 0;
     top: 0;
 
-    transform-origin: 0 0;
-
-    will-change: transform;
-
-}
-
-
-/* =========================================================
-   IMAGE
-   ========================================================= */
-
-.plan {
-
     display: block;
-
-    width: 100%;
-
-    height: auto;
-
-    user-select: none;
-
-    -webkit-user-select: none;
-
-    pointer-events: none;
 
 }
 
@@ -118,16 +97,14 @@ body {
 
     border: 1px solid white;
 
+    box-sizing: border-box;
+
     cursor: pointer;
 
     transform:
         translate(-50%, -50%);
 
     z-index: 20;
-
-    box-sizing: border-box;
-
-    touch-action: manipulation;
 
 }
 
@@ -146,7 +123,7 @@ body {
 
 
 /* =========================================================
-   COULEURS DES PASTILLES
+   COULEURS
    ========================================================= */
 
 .vasque {
@@ -221,7 +198,7 @@ body {
 
 
 /* =========================================================
-   TEXTE
+   TEXTES
    ========================================================= */
 
 .info-box h2 {
@@ -280,8 +257,6 @@ body {
     font-size: 25px;
 
     cursor: pointer;
-
-    z-index: 10;
 
 }
 
@@ -385,67 +360,57 @@ body {
 
 
 <!-- =========================================================
-     PLAN
+     ZONE DU PLAN
      ========================================================= -->
 
-<div
-    class="plan-viewer"
-    id="planViewer"
->
+<div id="viewer">
+
+
+    <canvas
+        id="planCanvas"
+    ></canvas>
+
+
+    <!-- =====================================================
+         PASTILLES
+         ===================================================== -->
 
 
     <div
-        class="plan-container"
-        id="planContainer"
-    >
+        class="hotspot vasque"
+        data-x="55"
+        data-y="30"
+        onclick="showInfo('vasque', this)"
+        title="Vasque"
+    ></div>
 
 
-        <img
-            src="PCG AYREM - RDC ind2 - 2026-07-02.png"
-            class="plan"
-            id="plan"
-            alt="Plan RDC"
-        >
+    <div
+        class="hotspot wc"
+        data-x="58"
+        data-y="25"
+        onclick="showInfo('wc', this)"
+        title="WC"
+    ></div>
 
 
-        <!-- =================================================
-             PASTILLES
-             ================================================= -->
+    <div
+        class="hotspot douche"
+        data-x="56"
+        data-y="26"
+        onclick="showInfo('douche', this)"
+        title="Douche"
+    ></div>
 
 
-        <div
-            class="hotspot vasque"
-            style="left:55%; top:30%;"
-            onclick="showInfo('vasque', this)"
-            title="Vasque"
-        ></div>
+    <div
+        class="hotspot sol-mur"
+        data-x="58"
+        data-y="30"
+        onclick="showInfo('sol-mur', this)"
+        title="Sol et mur"
+    ></div>
 
-
-        <div
-            class="hotspot wc"
-            style="left:58%; top:25%;"
-            onclick="showInfo('wc', this)"
-            title="WC"
-        ></div>
-
-
-        <div
-            class="hotspot douche"
-            style="left:56%; top:26%;"
-            onclick="showInfo('douche', this)"
-            title="Douche"
-        ></div>
-
-
-        <div
-            class="hotspot sol-mur"
-            style="left:58%; top:30%;"
-            onclick="showInfo('sol-mur', this)"
-            title="Sol et mur"
-        ></div>
-
-
-    </div>
 
 </div>
 
@@ -479,191 +444,350 @@ body {
 <script>
 
 /* =========================================================
-   VARIABLES
+   ÉLÉMENTS
    ========================================================= */
 
 const viewer =
     document.getElementById(
-        "planViewer"
+        "viewer"
     );
 
 
-const container =
+const canvas =
     document.getElementById(
-        "planContainer"
+        "planCanvas"
+    );
+
+
+const ctx =
+    canvas.getContext(
+        "2d"
     );
 
 
 const image =
-    document.getElementById(
-        "plan"
-    );
+    new Image();
 
+
+image.src =
+    "PCG AYREM - RDC ind2 - 2026-07-02.png";
+
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+let imageWidth = 0;
+
+let imageHeight = 0;
+
+
+/*
+ * Échelle du plan.
+ */
 
 let scale = 1;
 
-let x = 0;
 
-let y = 0;
+/*
+ * Position du plan.
+ */
+
+let offsetX = 0;
+
+let offsetY = 0;
 
 
 /*
- * Dimensions initiales
+ * Résolution écran.
  */
 
-let baseWidth = 0;
-
-let baseHeight = 0;
+let dpr =
+    window.devicePixelRatio || 1;
 
 
 /*
- * Souris
+ * Limites du zoom.
  */
 
-let mouseDown = false;
-
-let mouseStartX = 0;
-
-let mouseStartY = 0;
-
-let startX = 0;
-
-let startY = 0;
-
-
-/*
- * Touch
- */
-
-let touchMode = null;
-
-let touchStartX = 0;
-
-let touchStartY = 0;
-
-let touchStartXPosition = 0;
-
-let touchStartYPosition = 0;
-
-let initialDistance = 0;
-
-let initialScale = 1;
-
-let initialCenterX = 0;
-
-let initialCenterY = 0;
-
-
-/*
- * Zoom
- */
-
-const MIN_SCALE = 1;
+const MIN_SCALE = 0.05;
 
 const MAX_SCALE = 5;
 
 
 /* =========================================================
-   INITIALISATION
+   CHARGEMENT DE L'IMAGE
    ========================================================= */
 
-image.addEventListener(
-    "load",
+image.onload =
     function() {
 
-        /*
-         * Taille réelle de l'image
-         */
 
-        baseWidth =
+        imageWidth =
             image.naturalWidth;
 
-        baseHeight =
+
+        imageHeight =
             image.naturalHeight;
 
 
-        /*
-         * Taille d'affichage initiale.
-         *
-         * On adapte le plan à l'écran
-         * sans modifier la source originale.
-         */
-
-        const viewerWidth =
-            viewer.clientWidth;
-
-        const viewerHeight =
-            viewer.clientHeight;
+        resizeCanvas();
 
 
-        const ratioX =
-            viewerWidth /
-            baseWidth;
+        fitPlan();
 
 
-        const ratioY =
-            viewerHeight /
-            baseHeight;
+        draw();
 
-
-        scale =
-            Math.min(
-                ratioX,
-                ratioY
-            );
-
-
-        /*
-         * Ne jamais descendre
-         * sous une échelle raisonnable.
-         */
-
-        if (scale <= 0) {
-
-            scale = 1;
-
-        }
-
-
-        /*
-         * Centrage initial
-         */
-
-        x =
-            (
-                viewerWidth -
-                baseWidth * scale
-            ) / 2;
-
-
-        y =
-            (
-                viewerHeight -
-                baseHeight * scale
-            ) / 2;
-
-
-        applyTransform();
-
-    }
-);
+    };
 
 
 /* =========================================================
-   TRANSFORMATION
+   CANVAS HAUTE RÉSOLUTION
    ========================================================= */
 
-function applyTransform() {
+function resizeCanvas() {
 
-    container.style.transform =
-        "translate3d(" +
-        x +
-        "px, " +
-        y +
-        "px, 0) " +
-        "scale(" +
-        scale +
-        ")";
+
+    dpr =
+        window.devicePixelRatio || 1;
+
+
+    const width =
+        viewer.clientWidth;
+
+
+    const height =
+        viewer.clientHeight;
+
+
+    /*
+     * Taille réelle du canvas.
+     */
+
+    canvas.width =
+        Math.round(
+            width * dpr
+        );
+
+
+    canvas.height =
+        Math.round(
+            height * dpr
+        );
+
+
+    /*
+     * Taille CSS.
+     */
+
+    canvas.style.width =
+        width + "px";
+
+
+    canvas.style.height =
+        height + "px";
+
+
+    /*
+     * On travaille ensuite
+     * en coordonnées CSS.
+     */
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+}
+
+
+/* =========================================================
+   ADAPTATION INITIALE DU PLAN
+   ========================================================= */
+
+function fitPlan() {
+
+
+    const width =
+        viewer.clientWidth;
+
+
+    const height =
+        viewer.clientHeight;
+
+
+    const scaleX =
+        width /
+        imageWidth;
+
+
+    const scaleY =
+        height /
+        imageHeight;
+
+
+    /*
+     * Le plan tient entièrement
+     * dans l'écran.
+     */
+
+    scale =
+        Math.min(
+            scaleX,
+            scaleY
+        );
+
+
+    /*
+     * Position centrée.
+     */
+
+    offsetX =
+        (
+            width -
+            imageWidth * scale
+        ) / 2;
+
+
+    offsetY =
+        (
+            height -
+            imageHeight * scale
+        ) / 2;
+
+}
+
+
+/* =========================================================
+   DESSIN
+   ========================================================= */
+
+function draw() {
+
+
+    const width =
+        viewer.clientWidth;
+
+
+    const height =
+        viewer.clientHeight;
+
+
+    /*
+     * Effacement.
+     */
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    /*
+     * Dessin du plan.
+     */
+
+    ctx.drawImage(
+
+        image,
+
+        offsetX,
+
+        offsetY,
+
+        imageWidth * scale,
+
+        imageHeight * scale
+
+    );
+
+
+    /*
+     * Mise à jour des pastilles.
+     */
+
+    updateHotspots();
+
+}
+
+
+/* =========================================================
+   POSITIONNEMENT DES PASTILLES
+   ========================================================= */
+
+function updateHotspots() {
+
+
+    const hotspots =
+        document.querySelectorAll(
+            ".hotspot"
+        );
+
+
+    hotspots.forEach(
+        function(hotspot) {
+
+
+            const percentX =
+                parseFloat(
+                    hotspot.dataset.x
+                );
+
+
+            const percentY =
+                parseFloat(
+                    hotspot.dataset.y
+                );
+
+
+            /*
+             * Position dans l'image.
+             */
+
+            const imageX =
+                imageWidth *
+                percentX /
+                100;
+
+
+            const imageY =
+                imageHeight *
+                percentY /
+                100;
+
+
+            /*
+             * Position écran.
+             */
+
+            const screenX =
+                offsetX +
+                imageX *
+                scale;
+
+
+            const screenY =
+                offsetY +
+                imageY *
+                scale;
+
+
+            hotspot.style.left =
+                screenX + "px";
+
+
+            hotspot.style.top =
+                screenY + "px";
+
+        }
+    );
 
 }
 
@@ -684,29 +808,27 @@ function zoomAt(
 
 
     /*
-     * Position du point dans
-     * le système de coordonnées
-     * du plan.
+     * Coordonnée dans l'image.
      */
 
-    const worldX =
+    const imageX =
         (
             screenX -
-            x
+            offsetX
         ) /
         oldScale;
 
 
-    const worldY =
+    const imageY =
         (
             screenY -
-            y
+            offsetY
         ) /
         oldScale;
 
 
     /*
-     * Nouvelle échelle
+     * Nouvelle échelle.
      */
 
     scale =
@@ -720,29 +842,44 @@ function zoomAt(
 
 
     /*
-     * On conserve le point
-     * sous le curseur/doigt.
+     * On garde le même point
+     * sous le curseur.
      */
 
-    x =
+    offsetX =
         screenX -
-        worldX *
+        imageX *
         scale;
 
 
-    y =
+    offsetY =
         screenY -
-        worldY *
+        imageY *
         scale;
 
 
-    applyTransform();
+    draw();
 
 }
 
 
 /* =========================================================
-   SOURIS — CLIQUER
+   SOURIS
+   ========================================================= */
+
+let mouseDown = false;
+
+let mouseStartX = 0;
+
+let mouseStartY = 0;
+
+let startOffsetX = 0;
+
+let startOffsetY = 0;
+
+
+/* =========================================================
+   MOUSE DOWN
    ========================================================= */
 
 viewer.addEventListener(
@@ -751,7 +888,7 @@ viewer.addEventListener(
 
 
         /*
-         * Uniquement clic gauche
+         * Clic gauche uniquement.
          */
 
         if (
@@ -764,8 +901,8 @@ viewer.addEventListener(
 
 
         /*
-         * Si on clique sur une pastille,
-         * on laisse le clic gérer la fiche.
+         * Ne pas déplacer lorsque
+         * l'on clique sur une pastille.
          */
 
         if (
@@ -790,12 +927,12 @@ viewer.addEventListener(
             event.clientY;
 
 
-        startX =
-            x;
+        startOffsetX =
+            offsetX;
 
 
-        startY =
-            y;
+        startOffsetY =
+            offsetY;
 
 
         viewer.classList.add(
@@ -807,7 +944,7 @@ viewer.addEventListener(
 
 
 /* =========================================================
-   SOURIS — DÉPLACER
+   MOUSE MOVE
    ========================================================= */
 
 window.addEventListener(
@@ -824,30 +961,30 @@ window.addEventListener(
         }
 
 
-        x =
-            startX +
+        offsetX =
+            startOffsetX +
             (
                 event.clientX -
                 mouseStartX
             );
 
 
-        y =
-            startY +
+        offsetY =
+            startOffsetY +
             (
                 event.clientY -
                 mouseStartY
             );
 
 
-        applyTransform();
+        draw();
 
     }
 );
 
 
 /* =========================================================
-   SOURIS — RELÂCHER
+   MOUSE UP
    ========================================================= */
 
 window.addEventListener(
@@ -871,6 +1008,7 @@ window.addEventListener(
 viewer.addEventListener(
     "wheel",
     function(event) {
+
 
         event.preventDefault();
 
@@ -896,9 +1034,13 @@ viewer.addEventListener(
 
 
         zoomAt(
+
             mouseX,
+
             mouseY,
+
             scale * factor
+
         );
 
     },
@@ -909,22 +1051,44 @@ viewer.addEventListener(
 
 
 /* =========================================================
-   TOUCH — DISTANCE
+   TOUCH
    ========================================================= */
 
-function getDistance(
-    touch1,
-    touch2
+let touchMode = null;
+
+
+let touchStartX = 0;
+
+let touchStartY = 0;
+
+
+let touchStartOffsetX = 0;
+
+let touchStartOffsetY = 0;
+
+
+let pinchDistance = 0;
+
+let pinchScale = 1;
+
+
+/* =========================================================
+   DISTANCE DOIGTS
+   ========================================================= */
+
+function getTouchDistance(
+    a,
+    b
 ) {
 
     const dx =
-        touch2.clientX -
-        touch1.clientX;
+        b.clientX -
+        a.clientX;
 
 
     const dy =
-        touch2.clientY -
-        touch1.clientY;
+        b.clientY -
+        a.clientY;
 
 
     return Math.sqrt(
@@ -936,26 +1100,26 @@ function getDistance(
 
 
 /* =========================================================
-   TOUCH — CENTRE
+   CENTRE DOIGTS
    ========================================================= */
 
-function getCenter(
-    touch1,
-    touch2
+function getTouchCenter(
+    a,
+    b
 ) {
 
     return {
 
         x:
             (
-                touch1.clientX +
-                touch2.clientX
+                a.clientX +
+                b.clientX
             ) / 2,
 
         y:
             (
-                touch1.clientY +
-                touch2.clientY
+                a.clientY +
+                b.clientY
             ) / 2
 
     };
@@ -964,7 +1128,7 @@ function getCenter(
 
 
 /* =========================================================
-   TOUCH — DÉBUT
+   TOUCH START
    ========================================================= */
 
 viewer.addEventListener(
@@ -973,41 +1137,27 @@ viewer.addEventListener(
 
 
         /*
-         * Deux doigts
+         * Deux doigts.
          */
 
         if (
             event.touches.length === 2
         ) {
 
+
             touchMode =
-                "zoom";
+                "pinch";
 
 
-            initialDistance =
-                getDistance(
+            pinchDistance =
+                getTouchDistance(
                     event.touches[0],
                     event.touches[1]
                 );
 
 
-            initialScale =
+            pinchScale =
                 scale;
-
-
-            const center =
-                getCenter(
-                    event.touches[0],
-                    event.touches[1]
-                );
-
-
-            initialCenterX =
-                center.x;
-
-
-            initialCenterY =
-                center.y;
 
 
             return;
@@ -1016,12 +1166,29 @@ viewer.addEventListener(
 
 
         /*
-         * Un doigt
+         * Un doigt.
          */
 
         if (
             event.touches.length === 1
         ) {
+
+
+            /*
+             * Si c'est une pastille,
+             * on laisse le clic fonctionner.
+             */
+
+            if (
+                event.target.classList.contains(
+                    "hotspot"
+                )
+            ) {
+
+                return;
+
+            }
+
 
             touchMode =
                 "drag";
@@ -1035,12 +1202,12 @@ viewer.addEventListener(
                 event.touches[0].clientY;
 
 
-            touchStartXPosition =
-                x;
+            touchStartOffsetX =
+                offsetX;
 
 
-            touchStartYPosition =
-                y;
+            touchStartOffsetY =
+                offsetY;
 
         }
 
@@ -1052,7 +1219,7 @@ viewer.addEventListener(
 
 
 /* =========================================================
-   TOUCH — MOUVEMENT
+   TOUCH MOVE
    ========================================================= */
 
 viewer.addEventListener(
@@ -1064,7 +1231,7 @@ viewer.addEventListener(
 
 
         /*
-         * ZOOM
+         * PINCEMENT
          */
 
         if (
@@ -1073,63 +1240,42 @@ viewer.addEventListener(
 
 
             const distance =
-                getDistance(
+                getTouchDistance(
                     event.touches[0],
                     event.touches[1]
                 );
 
 
             const center =
-                getCenter(
+                getTouchCenter(
                     event.touches[0],
                     event.touches[1]
                 );
 
 
             const newScale =
-                initialScale *
+                pinchScale *
                 (
                     distance /
-                    initialDistance
+                    pinchDistance
                 );
 
 
-            /*
-             * Zoom autour du centre
-             * des deux doigts.
-             */
+            const rect =
+                viewer.getBoundingClientRect();
+
 
             zoomAt(
-                initialCenterX,
-                initialCenterY,
-                newScale
-            );
 
-
-            /*
-             * Déplacement du centre
-             * pendant le pincement.
-             */
-
-            x +=
                 center.x -
-                initialCenterX;
+                rect.left,
 
-
-            y +=
                 center.y -
-                initialCenterY;
+                rect.top,
 
+                newScale
 
-            initialCenterX =
-                center.x;
-
-
-            initialCenterY =
-                center.y;
-
-
-            applyTransform();
+            );
 
 
             return;
@@ -1157,17 +1303,17 @@ viewer.addEventListener(
                 touchStartY;
 
 
-            x =
-                touchStartXPosition +
+            offsetX =
+                touchStartOffsetX +
                 dx;
 
 
-            y =
-                touchStartYPosition +
+            offsetY =
+                touchStartOffsetY +
                 dy;
 
 
-            applyTransform();
+            draw();
 
         }
 
@@ -1179,7 +1325,7 @@ viewer.addEventListener(
 
 
 /* =========================================================
-   TOUCH — FIN
+   TOUCH END
    ========================================================= */
 
 viewer.addEventListener(
@@ -1193,7 +1339,7 @@ viewer.addEventListener(
 
 
 /* =========================================================
-   CONTENU DES FICHES
+   FICHES
    ========================================================= */
 
 function getInfoContent(type) {
@@ -1361,7 +1507,7 @@ function getInfoContent(type) {
 
 
 /* =========================================================
-   OUVERTURE FICHE
+   OUVRIR UNE FICHE
    ========================================================= */
 
 function showInfo(
@@ -1390,17 +1536,9 @@ function showInfo(
         "block";
 
 
-    /*
-     * On mémorise la pastille.
-     */
-
     window.activeHotspot =
         hotspot;
 
-
-    /*
-     * Positionnement après rendu.
-     */
 
     requestAnimationFrame(
         function() {
@@ -1416,7 +1554,7 @@ function showInfo(
 
 
 /* =========================================================
-   POSITION DE LA FICHE
+   POSITION FICHE
    ========================================================= */
 
 function positionInfoBox(
@@ -1455,10 +1593,6 @@ function positionInfoBox(
     const margin = 10;
 
 
-    /*
-     * Centre de la pastille.
-     */
-
     const centerX =
         rect.left +
         rect.width / 2;
@@ -1475,7 +1609,7 @@ function positionInfoBox(
 
 
     /*
-     * DROITE
+     * Droite.
      */
 
     if (
@@ -1494,7 +1628,7 @@ function positionInfoBox(
 
 
     /*
-     * GAUCHE
+     * Gauche.
      */
 
     else if (
@@ -1514,7 +1648,7 @@ function positionInfoBox(
 
 
     /*
-     * CENTRE
+     * Centre.
      */
 
     else {
@@ -1527,7 +1661,7 @@ function positionInfoBox(
 
 
     /*
-     * CENTRAGE VERTICAL
+     * Vertical.
      */
 
     top =
@@ -1536,7 +1670,7 @@ function positionInfoBox(
 
 
     /*
-     * Limites
+     * Limites.
      */
 
     if (
@@ -1600,7 +1734,7 @@ function positionInfoBox(
 
 
 /* =========================================================
-   FERMETURE
+   FERMER
    ========================================================= */
 
 function closeInfo() {
@@ -1622,6 +1756,23 @@ window.addEventListener(
     function() {
 
 
+        resizeCanvas();
+
+
+        /*
+         * On ne refait PAS fitPlan()
+         * ici : cela évite que le plan
+         * saute lorsque le téléphone
+         * change légèrement de taille.
+         */
+
+        draw();
+
+
+        /*
+         * Repositionnement de la fiche.
+         */
+
         if (
             window.activeHotspot &&
             document.getElementById(
@@ -1641,7 +1792,7 @@ window.addEventListener(
 
 
 /* =========================================================
-   ESC
+   CLAVIER ESC
    ========================================================= */
 
 document.addEventListener(
@@ -1659,8 +1810,8 @@ document.addEventListener(
     }
 );
 
-
 </script>
+
 
 </body>
 
