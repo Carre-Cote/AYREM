@@ -5,9 +5,14 @@
 
     <meta charset="UTF-8">
 
+    <!--
+        IMPORTANT :
+        On laisse le navigateur gérer naturellement
+        le zoom avec les doigts sur téléphone.
+    -->
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        content="width=device-width, initial-scale=1.0"
     >
 
     <title>Carré Côté - Plan interactif</title>
@@ -25,37 +30,7 @@
             margin: 0;
             padding: 0;
 
-            width: 100%;
-            height: 100%;
-
             font-family: Arial, sans-serif;
-
-            background: #eeeeee;
-
-            overflow: hidden;
-
-            /*
-             * On empêche le navigateur de zoomer
-             * ou de déplacer toute la page.
-             */
-
-            touch-action: none;
-
-        }
-
-
-        /* =====================================================
-           ZONE DU PLAN
-           ===================================================== */
-
-        .plan-viewport {
-
-            position: relative;
-
-            width: 100vw;
-            height: 100vh;
-
-            overflow: hidden;
 
             background: #eeeeee;
 
@@ -68,16 +43,13 @@
 
         .plan-container {
 
-            position: absolute;
-
-            left: 0;
-            top: 0;
+            position: relative;
 
             width: 100%;
 
-            transform-origin: 0 0;
+            max-width: 1400px;
 
-            will-change: transform;
+            margin: 0 auto;
 
         }
 
@@ -88,19 +60,11 @@
 
         .plan {
 
-            display: block;
-
             width: 100%;
 
             height: auto;
 
-            user-select: none;
-
-            -webkit-user-select: none;
-
-            pointer-events: none;
-
-            image-rendering: auto;
+            display: block;
 
         }
 
@@ -129,8 +93,12 @@
             transition:
                 transform 0.15s ease;
 
-            z-index: 20;
+            z-index: 10;
 
+            /*
+             * Facilite le clic tactile
+             * sans modifier la taille visible.
+             */
             touch-action: manipulation;
 
             user-select: none;
@@ -140,7 +108,9 @@
         }
 
 
-        /* Agrandissement souris sur ordinateur */
+        /* =====================================================
+           SURVOL UNIQUEMENT SUR ORDINATEUR
+           ===================================================== */
 
         @media (hover: hover) {
 
@@ -188,58 +158,6 @@
 
 
         /* =====================================================
-           BOUTONS DE ZOOM
-           ===================================================== */
-
-        .zoom-controls {
-
-            position: fixed;
-
-            right: 15px;
-            bottom: 15px;
-
-            z-index: 2000;
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 6px;
-
-        }
-
-
-        .zoom-controls button {
-
-            width: 42px;
-            height: 42px;
-
-            border: none;
-
-            border-radius: 8px;
-
-            background: white;
-
-            box-shadow:
-                0 3px 12px rgba(0,0,0,0.25);
-
-            font-size: 22px;
-
-            cursor: pointer;
-
-            touch-action: manipulation;
-
-        }
-
-
-        .zoom-controls button:active {
-
-            transform: scale(0.95);
-
-        }
-
-
-        /* =====================================================
            FENÊTRE D'INFORMATION
            ===================================================== */
 
@@ -249,13 +167,23 @@
 
             position: fixed;
 
-            z-index: 3000;
+            /*
+             * Taille confortable sur ordinateur
+             */
+            width: 450px;
 
-            width: 430px;
+            /*
+             * Sécurité pour les petits écrans
+             */
+            max-width:
+                calc(100vw - 30px);
 
-            max-width: calc(100vw - 30px);
-
-            max-height: 70vh;
+            /*
+             * La fiche peut être longue,
+             * mais reste toujours dans l'écran.
+             */
+            max-height:
+                calc(100vh - 30px);
 
             overflow-y: auto;
 
@@ -263,24 +191,36 @@
 
             background: white;
 
-            padding: 24px;
+            padding: 25px;
 
             border-radius: 12px;
 
+            box-shadow:
+                0 10px 40px
+                rgba(0, 0, 0, 0.25);
+
             box-sizing: border-box;
 
-            box-shadow:
-                0 8px 35px rgba(0,0,0,0.30);
+            z-index: 1000;
 
+            /*
+             * Permet un défilement fluide
+             * de la fiche sur téléphone.
+             */
             -webkit-overflow-scrolling: touch;
 
+            /*
+             * Important :
+             * la fiche peut être scrollée
+             * indépendamment du plan.
+             */
             touch-action: pan-y;
 
         }
 
 
         /* =====================================================
-           CONTENU DE LA FICHE
+           TITRES
            ===================================================== */
 
         .info-box h2 {
@@ -325,20 +265,24 @@
             position: absolute;
 
             right: 15px;
-            top: 12px;
+
+            top: 10px;
 
             width: 30px;
+
             height: 30px;
 
             font-size: 25px;
 
-            line-height: 28px;
+            line-height: 30px;
 
             text-align: center;
 
             cursor: pointer;
 
             color: #333;
+
+            z-index: 10;
 
             touch-action: manipulation;
 
@@ -353,12 +297,13 @@
 
             .info-box {
 
-                width: 350px;
+                width: 360px;
 
                 max-width:
                     calc(100vw - 30px);
 
-                max-height: 60vh;
+                max-height:
+                    calc(100vh - 30px);
 
                 padding: 20px;
 
@@ -368,6 +313,20 @@
             .info-box h2 {
 
                 font-size: 20px;
+
+            }
+
+
+            .info-box h3 {
+
+                font-size: 15px;
+
+            }
+
+
+            .info-box p {
+
+                font-size: 14px;
 
             }
 
@@ -382,12 +341,24 @@
 
             .info-box {
 
-                width: 285px;
+                /*
+                 * On ne prend surtout PAS toute la largeur.
+                 *
+                 * La fiche reste une petite fenêtre
+                 * flottante au-dessus du plan.
+                 */
+                width: 280px;
 
                 max-width:
                     calc(100vw - 20px);
 
-                max-height: 55vh;
+                /*
+                 * Limite verticale.
+                 * Si le contenu est plus long :
+                 * défilement vertical.
+                 */
+                max-height:
+                    calc(100vh - 20px);
 
                 padding: 16px;
 
@@ -424,6 +395,7 @@
             .close {
 
                 right: 10px;
+
                 top: 8px;
 
                 font-size: 22px;
@@ -431,6 +403,7 @@
             }
 
         }
+
 
     </style>
 
@@ -441,116 +414,70 @@
 
 
 <!-- =========================================================
-     ZONE DE VISUALISATION
+     PLAN
      ========================================================= -->
 
-<div
-    class="plan-viewport"
-    id="planViewport"
->
+<div class="plan-container">
+
+
+    <img
+        src="PCG AYREM - RDC ind2 - 2026-07-02.png"
+        class="plan"
+        id="plan"
+        alt="Plan RDC"
+    >
 
 
     <!-- =====================================================
-         PLAN
+         VASQUE
          ===================================================== -->
 
     <div
-        class="plan-container"
-        id="planContainer"
-    >
+        class="hotspot vasque"
+        style="left: 55%; top: 30%;"
+        onclick="showInfo('vasque')"
+        title="Vasque"
+    ></div>
 
 
-        <img
-            src="PCG AYREM - RDC ind2 - 2026-07-02.png"
-            class="plan"
-            id="plan"
-            alt="Plan RDC"
-        >
+    <!-- =====================================================
+         WC
+         ===================================================== -->
+
+    <div
+        class="hotspot wc"
+        style="left: 58%; top: 25%;"
+        onclick="showInfo('wc')"
+        title="WC"
+    ></div>
 
 
-        <!-- =================================================
-             VASQUE
-             ================================================= -->
+    <!-- =====================================================
+         DOUCHE
+         ===================================================== -->
 
-        <div
-            class="hotspot vasque"
-            style="left: 55%; top: 30%;"
-            onclick="showInfo('vasque')"
-            title="Vasque"
-        ></div>
-
-
-        <!-- =================================================
-             WC
-             ================================================= -->
-
-        <div
-            class="hotspot wc"
-            style="left: 58%; top: 25%;"
-            onclick="showInfo('wc')"
-            title="WC"
-        ></div>
+    <div
+        class="hotspot douche"
+        style="left: 56%; top: 26%;"
+        onclick="showInfo('douche')"
+        title="Douche"
+    ></div>
 
 
-        <!-- =================================================
-             DOUCHE
-             ================================================= -->
+    <!-- =====================================================
+         SOL ET MUR
+         ===================================================== -->
 
-        <div
-            class="hotspot douche"
-            style="left: 56%; top: 26%;"
-            onclick="showInfo('douche')"
-            title="Douche"
-        ></div>
+    <div
+        class="hotspot sol-mur"
+        style="left: 58%; top: 30%;"
+        onclick="showInfo('sol-mur')"
+        title="Sol et mur"
+    ></div>
 
-
-        <!-- =================================================
-             SOL ET MUR
-             ================================================= -->
-
-        <div
-            class="hotspot sol-mur"
-            style="left: 58%; top: 30%;"
-            onclick="showInfo('sol-mur')"
-            title="Sol et mur"
-        ></div>
-
-
-    </div>
 
 </div>
 
-
-<!-- =========================================================
-     BOUTONS DE ZOOM
-     ========================================================= -->
-
-<div class="zoom-controls">
-
-    <button
-        onclick="zoomIn()"
-        aria-label="Zoom avant"
-    >
-        +
-    </button>
-
-
-    <button
-        onclick="zoomOut()"
-        aria-label="Zoom arrière"
-    >
-        −
-    </button>
-
-
-    <button
-        onclick="resetZoom()"
-        aria-label="Réinitialiser"
-    >
-        ⟳
-    </button>
-
-</div>
 
 
 <!-- =========================================================
@@ -579,455 +506,6 @@
 
 
 <script>
-
-
-/* ============================================================
-   VARIABLES DU ZOOM
-   ============================================================ */
-
-let scale = 1;
-
-let translateX = 0;
-let translateY = 0;
-
-
-/*
- * Niveau maximum de zoom.
- */
-
-const MAX_SCALE = 2;
-
-
-/*
- * Niveau minimum.
- */
-
-const MIN_SCALE = 1;
-
-
-/*
- * Facteur d'agrandissement
- * avec les boutons.
- */
-
-const ZOOM_STEP = 1.3;
-
-
-
-/* ============================================================
-   APPLICATION DE LA TRANSFORMATION
-   ============================================================ */
-
-function updateTransform() {
-
-    const container =
-        document.getElementById(
-            "planContainer"
-        );
-
-
-    container.style.transform =
-        "translate(" +
-        translateX +
-        "px, " +
-        translateY +
-        "px) " +
-        "scale(" +
-        scale +
-        ")";
-
-}
-
-
-
-/* ============================================================
-   ZOOM AVANT
-   ============================================================ */
-
-function zoomIn() {
-
-    scale *= ZOOM_STEP;
-
-
-    if (scale > MAX_SCALE) {
-
-        scale = MAX_SCALE;
-
-    }
-
-
-    updateTransform();
-
-}
-
-
-
-/* ============================================================
-   ZOOM ARRIÈRE
-   ============================================================ */
-
-function zoomOut() {
-
-    scale /= ZOOM_STEP;
-
-
-    if (scale < MIN_SCALE) {
-
-        scale = MIN_SCALE;
-
-        translateX = 0;
-        translateY = 0;
-
-    }
-
-
-    updateTransform();
-
-}
-
-
-
-/* ============================================================
-   RESET
-   ============================================================ */
-
-function resetZoom() {
-
-    scale = 1;
-
-    translateX = 0;
-
-    translateY = 0;
-
-    updateTransform();
-
-}
-
-
-
-/* ============================================================
-   GESTION DU ZOOM TACTILE
-   ============================================================ */
-
-const viewport =
-    document.getElementById(
-        "planViewport"
-    );
-
-
-let isDragging = false;
-
-let startX = 0;
-let startY = 0;
-
-let startTranslateX = 0;
-let startTranslateY = 0;
-
-
-let initialDistance = null;
-
-let initialScale = 1;
-
-
-/*
- * Centre du pincement.
- */
-
-let pinchCenterX = 0;
-let pinchCenterY = 0;
-
-
-
-/* ============================================================
-   CALCUL DE LA DISTANCE ENTRE DEUX DOIGTS
-   ============================================================ */
-
-function getDistance(touch1, touch2) {
-
-    const dx =
-        touch1.clientX -
-        touch2.clientX;
-
-    const dy =
-        touch1.clientY -
-        touch2.clientY;
-
-
-    return Math.sqrt(
-        dx * dx +
-        dy * dy
-    );
-
-}
-
-
-
-/* ============================================================
-   TOUCH START
-   ============================================================ */
-
-viewport.addEventListener(
-    "touchstart",
-    function(event) {
-
-
-        if (
-            event.target.closest(
-                ".info-box"
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        /* ============================
-           DEUX DOIGTS
-           ============================ */
-
-        if (
-            event.touches.length === 2
-        ) {
-
-            isDragging = false;
-
-
-            initialDistance =
-                getDistance(
-                    event.touches[0],
-                    event.touches[1]
-                );
-
-
-            initialScale = scale;
-
-
-            pinchCenterX =
-                (
-                    event.touches[0].clientX +
-                    event.touches[1].clientX
-                ) / 2;
-
-
-            pinchCenterY =
-                (
-                    event.touches[0].clientY +
-                    event.touches[1].clientY
-                ) / 2;
-
-
-            return;
-
-        }
-
-
-        /* ============================
-           UN DOIGT
-           ============================ */
-
-        if (
-            event.touches.length === 1
-        ) {
-
-            isDragging = true;
-
-
-            startX =
-                event.touches[0].clientX;
-
-
-            startY =
-                event.touches[0].clientY;
-
-
-            startTranslateX =
-                translateX;
-
-
-            startTranslateY =
-                translateY;
-
-        }
-
-    },
-    {
-        passive: false
-    }
-);
-
-
-
-/* ============================================================
-   TOUCH MOVE
-   ============================================================ */
-
-viewport.addEventListener(
-    "touchmove",
-    function(event) {
-
-
-        event.preventDefault();
-
-
-        /* ============================
-           PINCEMENT
-           ============================ */
-
-        if (
-            event.touches.length === 2 &&
-            initialDistance
-        ) {
-
-
-            const currentDistance =
-                getDistance(
-                    event.touches[0],
-                    event.touches[1]
-                );
-
-
-            let newScale =
-                initialScale *
-                (
-                    currentDistance /
-                    initialDistance
-                );
-
-
-            newScale =
-                Math.max(
-                    MIN_SCALE,
-                    Math.min(
-                        MAX_SCALE,
-                        newScale
-                    )
-                );
-
-
-            /*
-             * Coordonnées avant zoom
-             * autour du centre du pincement.
-             */
-
-            const worldX =
-                (
-                    pinchCenterX -
-                    translateX
-                ) /
-                scale;
-
-
-            const worldY =
-                (
-                    pinchCenterY -
-                    translateY
-                ) /
-                scale;
-
-
-            scale =
-                newScale;
-
-
-            /*
-             * On conserve le même point
-             * sous les doigts.
-             */
-
-            translateX =
-                pinchCenterX -
-                worldX * scale;
-
-
-            translateY =
-                pinchCenterY -
-                worldY * scale;
-
-
-            updateTransform();
-
-
-            return;
-
-        }
-
-
-        /* ============================
-           DÉPLACEMENT
-           ============================ */
-
-        if (
-            isDragging &&
-            event.touches.length === 1
-        ) {
-
-
-            const currentX =
-                event.touches[0].clientX;
-
-
-            const currentY =
-                event.touches[0].clientY;
-
-
-            translateX =
-                startTranslateX +
-                (
-                    currentX -
-                    startX
-                );
-
-
-            translateY =
-                startTranslateY +
-                (
-                    currentY -
-                    startY
-                );
-
-
-            updateTransform();
-
-        }
-
-    },
-    {
-        passive: false
-    }
-);
-
-
-
-/* ============================================================
-   TOUCH END
-   ============================================================ */
-
-viewport.addEventListener(
-    "touchend",
-    function(event) {
-
-
-        if (
-            event.touches.length < 2
-        ) {
-
-            initialDistance = null;
-
-        }
-
-
-        if (
-            event.touches.length === 0
-        ) {
-
-            isDragging = false;
-
-        }
-
-    }
-);
-
 
 
 /* ============================================================
@@ -1234,17 +712,24 @@ function showInfo(type) {
         );
 
 
+    /*
+     * Chargement du contenu
+     */
+
     infoContent.innerHTML =
         getInfoContent(type);
 
+
+    /*
+     * Affichage
+     */
 
     infoBox.style.display =
         "block";
 
 
     /*
-     * On place la fiche initialement
-     * au centre de l'écran.
+     * On positionne la fiche.
      */
 
     positionInfoBox();
@@ -1267,15 +752,15 @@ function positionInfoBox() {
 
 
     /*
-     * Dimensions de l'écran.
+     * Dimensions visibles de l'écran.
      */
 
-    const screenWidth =
-        window.innerWidth;
+    const viewportWidth =
+        document.documentElement.clientWidth;
 
 
-    const screenHeight =
-        window.innerHeight;
+    const viewportHeight =
+        document.documentElement.clientHeight;
 
 
     /*
@@ -1291,19 +776,25 @@ function positionInfoBox() {
 
 
     /*
-     * Centrage.
+     * Centrage de la fiche.
+     *
+     * IMPORTANT :
+     * la fiche est indépendante du plan.
+     *
+     * Donc même si le plan est zoomé,
+     * la fiche conserve sa taille.
      */
 
     let left =
         (
-            screenWidth -
+            viewportWidth -
             boxWidth
         ) / 2;
 
 
     let top =
         (
-            screenHeight -
+            viewportHeight -
             boxHeight
         ) / 2;
 
@@ -1312,35 +803,48 @@ function positionInfoBox() {
      * Marges de sécurité.
      */
 
-    left =
-        Math.max(
-            10,
-            left
-        );
-
-
-    top =
-        Math.max(
-            10,
-            top
-        );
+    const margin = 10;
 
 
     /*
-     * Empêcher de sortir de l'écran.
+     * Empêche la fiche de sortir
+     * horizontalement.
      */
+
+    if (
+        left < margin
+    ) {
+
+        left = margin;
+
+    }
+
 
     if (
         left +
         boxWidth >
-        screenWidth -
-        10
+        viewportWidth -
+        margin
     ) {
 
         left =
-            screenWidth -
+            viewportWidth -
             boxWidth -
-            10;
+            margin;
+
+    }
+
+
+    /*
+     * Empêche la fiche de sortir
+     * verticalement.
+     */
+
+    if (
+        top < margin
+    ) {
+
+        top = margin;
 
     }
 
@@ -1348,17 +852,21 @@ function positionInfoBox() {
     if (
         top +
         boxHeight >
-        screenHeight -
-        10
+        viewportHeight -
+        margin
     ) {
 
         top =
-            screenHeight -
+            viewportHeight -
             boxHeight -
-            10;
+            margin;
 
     }
 
+
+    /*
+     * Application.
+     */
 
     infoBox.style.left =
         left + "px";
@@ -1372,7 +880,7 @@ function positionInfoBox() {
 
 
 /* ============================================================
-   FERMETURE
+   FERMETURE DE LA FICHE
    ============================================================ */
 
 function closeInfo() {
@@ -1388,7 +896,7 @@ function closeInfo() {
 
 
 /* ============================================================
-   REDIMENSIONNEMENT DE L'ÉCRAN
+   REPOSITIONNEMENT SI LA FENÊTRE CHANGE
    ============================================================ */
 
 window.addEventListener(
