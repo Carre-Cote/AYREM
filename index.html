@@ -5,11 +5,6 @@
 
     <meta charset="UTF-8">
 
-    <!--
-        IMPORTANT :
-        On laisse le navigateur gérer naturellement
-        le zoom avec les doigts sur téléphone.
-    -->
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
@@ -38,7 +33,7 @@
 
 
         /* =====================================================
-           CONTENEUR DU PLAN
+           PLAN
            ===================================================== */
 
         .plan-container {
@@ -53,10 +48,6 @@
 
         }
 
-
-        /* =====================================================
-           IMAGE DU PLAN
-           ===================================================== */
 
         .plan {
 
@@ -95,10 +86,6 @@
 
             z-index: 10;
 
-            /*
-             * Facilite le clic tactile
-             * sans modifier la taille visible.
-             */
             touch-action: manipulation;
 
             user-select: none;
@@ -108,9 +95,7 @@
         }
 
 
-        /* =====================================================
-           SURVOL UNIQUEMENT SUR ORDINATEUR
-           ===================================================== */
+        /* Survol uniquement sur ordinateur */
 
         @media (hover: hover) {
 
@@ -168,22 +153,19 @@
             position: fixed;
 
             /*
-             * Taille confortable sur ordinateur
+             * Taille de référence.
+             * Le JavaScript va ensuite compenser
+             * automatiquement le zoom du navigateur.
              */
             width: 450px;
 
-            /*
-             * Sécurité pour les petits écrans
-             */
-            max-width:
-                calc(100vw - 30px);
+            max-width: 450px;
 
             /*
-             * La fiche peut être longue,
-             * mais reste toujours dans l'écran.
+             * La hauteur sera également adaptée
+             * dynamiquement.
              */
-            max-height:
-                calc(100vh - 30px);
+            max-height: 500px;
 
             overflow-y: auto;
 
@@ -195,24 +177,22 @@
 
             border-radius: 12px;
 
+            box-sizing: border-box;
+
             box-shadow:
                 0 10px 40px
                 rgba(0, 0, 0, 0.25);
 
-            box-sizing: border-box;
-
             z-index: 1000;
 
             /*
-             * Permet un défilement fluide
-             * de la fiche sur téléphone.
+             * Défilement fluide sur téléphone.
              */
             -webkit-overflow-scrolling: touch;
 
             /*
-             * Important :
-             * la fiche peut être scrollée
-             * indépendamment du plan.
+             * Autorise uniquement le défilement
+             * vertical dans la fiche.
              */
             touch-action: pan-y;
 
@@ -299,11 +279,9 @@
 
                 width: 360px;
 
-                max-width:
-                    calc(100vw - 30px);
+                max-width: 360px;
 
-                max-height:
-                    calc(100vh - 30px);
+                max-height: 450px;
 
                 padding: 20px;
 
@@ -341,24 +319,11 @@
 
             .info-box {
 
-                /*
-                 * On ne prend surtout PAS toute la largeur.
-                 *
-                 * La fiche reste une petite fenêtre
-                 * flottante au-dessus du plan.
-                 */
                 width: 280px;
 
-                max-width:
-                    calc(100vw - 20px);
+                max-width: 280px;
 
-                /*
-                 * Limite verticale.
-                 * Si le contenu est plus long :
-                 * défilement vertical.
-                 */
-                max-height:
-                    calc(100vh - 20px);
+                max-height: 400px;
 
                 padding: 16px;
 
@@ -403,7 +368,6 @@
             }
 
         }
-
 
     </style>
 
@@ -489,7 +453,6 @@
     id="infoBox"
 >
 
-
     <span
         class="close"
         onclick="closeInfo()"
@@ -499,7 +462,6 @@
 
 
     <div id="infoContent"></div>
-
 
 </div>
 
@@ -513,7 +475,6 @@
    ============================================================ */
 
 function getInfoContent(type) {
-
 
     let content = "";
 
@@ -694,6 +655,104 @@ function getInfoContent(type) {
 
 
 /* ============================================================
+   OBTENIR LE NIVEAU DE ZOOM DU NAVIGATEUR
+   ============================================================ */
+
+function getBrowserZoom() {
+
+    /*
+     * visualViewport.scale donne le niveau
+     * de zoom visuel sur les navigateurs
+     * mobiles modernes.
+     */
+
+    if (window.visualViewport) {
+
+        return window.visualViewport.scale || 1;
+
+    }
+
+
+    /*
+     * Valeur de secours.
+     */
+
+    return 1;
+
+}
+
+
+
+/* ============================================================
+   DIMENSIONS DE BASE DE LA FICHE
+   ============================================================ */
+
+function getInfoDimensions() {
+
+
+    const screenWidth =
+        document.documentElement.clientWidth;
+
+
+    const screenHeight =
+        document.documentElement.clientHeight;
+
+
+    /*
+     * Taille souhaitée selon l'écran.
+     */
+
+    let width;
+    let height;
+
+
+    if (screenWidth <= 600) {
+
+        width = 280;
+
+        height =
+            Math.min(
+                400,
+                screenHeight - 20
+            );
+
+    }
+
+    else if (screenWidth <= 900) {
+
+        width = 360;
+
+        height =
+            Math.min(
+                450,
+                screenHeight - 30
+            );
+
+    }
+
+    else {
+
+        width = 450;
+
+        height =
+            Math.min(
+                500,
+                screenHeight - 30
+            );
+
+    }
+
+
+    return {
+        width: width,
+        height: height
+    };
+
+}
+
+
+
+/* ============================================================
    OUVERTURE DE LA FICHE
    ============================================================ */
 
@@ -713,7 +772,7 @@ function showInfo(type) {
 
 
     /*
-     * Chargement du contenu
+     * Contenu
      */
 
     infoContent.innerHTML =
@@ -721,7 +780,67 @@ function showInfo(type) {
 
 
     /*
-     * Affichage
+     * Niveau de zoom actuel
+     */
+
+    const zoom =
+        getBrowserZoom();
+
+
+    /*
+     * Dimensions souhaitées
+     * pour l'utilisateur.
+     */
+
+    const dimensions =
+        getInfoDimensions();
+
+
+    /*
+     * Compensation du zoom.
+     *
+     * Exemple :
+     *
+     * zoom navigateur = 2
+     *
+     * largeur souhaitée = 280 px
+     *
+     * largeur CSS appliquée = 140 px
+     *
+     * Après le zoom ×2 :
+     *
+     * 140 × 2 = 280 px
+     *
+     * La fiche conserve donc
+     * une taille physique normale.
+     */
+
+    const cssWidth =
+        dimensions.width / zoom;
+
+
+    const cssHeight =
+        dimensions.height / zoom;
+
+
+    /*
+     * Application des dimensions.
+     */
+
+    infoBox.style.width =
+        cssWidth + "px";
+
+
+    infoBox.style.maxWidth =
+        cssWidth + "px";
+
+
+    infoBox.style.maxHeight =
+        cssHeight + "px";
+
+
+    /*
+     * Affichage.
      */
 
     infoBox.style.display =
@@ -729,7 +848,7 @@ function showInfo(type) {
 
 
     /*
-     * On positionne la fiche.
+     * Positionnement.
      */
 
     positionInfoBox();
@@ -739,7 +858,7 @@ function showInfo(type) {
 
 
 /* ============================================================
-   POSITIONNEMENT DE LA FICHE
+   POSITIONNEMENT
    ============================================================ */
 
 function positionInfoBox() {
@@ -752,19 +871,15 @@ function positionInfoBox() {
 
 
     /*
-     * Dimensions visibles de l'écran.
+     * Niveau de zoom.
      */
 
-    const viewportWidth =
-        document.documentElement.clientWidth;
-
-
-    const viewportHeight =
-        document.documentElement.clientHeight;
+    const zoom =
+        getBrowserZoom();
 
 
     /*
-     * Dimensions de la fiche.
+     * Dimensions réelles CSS.
      */
 
     const boxWidth =
@@ -776,13 +891,40 @@ function positionInfoBox() {
 
 
     /*
-     * Centrage de la fiche.
-     *
-     * IMPORTANT :
-     * la fiche est indépendante du plan.
-     *
-     * Donc même si le plan est zoomé,
-     * la fiche conserve sa taille.
+     * Dimensions visuelles
+     * du viewport.
+     */
+
+    let viewportWidth =
+        window.innerWidth;
+
+
+    let viewportHeight =
+        window.innerHeight;
+
+
+    /*
+     * Sur les navigateurs mobiles,
+     * visualViewport donne la partie
+     * réellement visible.
+     */
+
+    if (window.visualViewport) {
+
+        viewportWidth =
+            window.visualViewport.width;
+
+
+        viewportHeight =
+            window.visualViewport.height;
+
+    }
+
+
+    /*
+     * La largeur/hauteur retournée par
+     * visualViewport est exprimée dans
+     * les coordonnées CSS.
      */
 
     let left =
@@ -800,22 +942,41 @@ function positionInfoBox() {
 
 
     /*
-     * Marges de sécurité.
+     * Décalage éventuel du viewport
+     * lors du zoom.
      */
 
-    const margin = 10;
+    if (window.visualViewport) {
+
+        left +=
+            window.visualViewport.offsetLeft;
+
+
+        top +=
+            window.visualViewport.offsetTop;
+
+    }
 
 
     /*
-     * Empêche la fiche de sortir
-     * horizontalement.
+     * Marges.
+     */
+
+    const margin =
+        10 / zoom;
+
+
+    /*
+     * Sécurité horizontale.
      */
 
     if (
-        left < margin
+        left <
+        margin
     ) {
 
-        left = margin;
+        left =
+            margin;
 
     }
 
@@ -836,15 +997,16 @@ function positionInfoBox() {
 
 
     /*
-     * Empêche la fiche de sortir
-     * verticalement.
+     * Sécurité verticale.
      */
 
     if (
-        top < margin
+        top <
+        margin
     ) {
 
-        top = margin;
+        top =
+            margin;
 
     }
 
@@ -865,7 +1027,7 @@ function positionInfoBox() {
 
 
     /*
-     * Application.
+     * Position finale.
      */
 
     infoBox.style.left =
@@ -880,7 +1042,7 @@ function positionInfoBox() {
 
 
 /* ============================================================
-   FERMETURE DE LA FICHE
+   FERMETURE
    ============================================================ */
 
 function closeInfo() {
@@ -896,7 +1058,80 @@ function closeInfo() {
 
 
 /* ============================================================
-   REPOSITIONNEMENT SI LA FENÊTRE CHANGE
+   ADAPTATION AU ZOOM
+   ============================================================ */
+
+if (window.visualViewport) {
+
+
+    window.visualViewport.addEventListener(
+        "resize",
+        function() {
+
+
+            const infoBox =
+                document.getElementById(
+                    "infoBox"
+                );
+
+
+            /*
+             * Si la fiche est ouverte,
+             * on recalcule sa taille.
+             */
+
+            if (
+                infoBox.style.display ===
+                "block"
+            ) {
+
+                /*
+                 * On récupère le contenu actuel.
+                 * Il n'est pas modifié.
+                 */
+
+                const zoom =
+                    getBrowserZoom();
+
+
+                const dimensions =
+                    getInfoDimensions();
+
+
+                infoBox.style.width =
+                    (
+                        dimensions.width /
+                        zoom
+                    ) + "px";
+
+
+                infoBox.style.maxWidth =
+                    (
+                        dimensions.width /
+                        zoom
+                    ) + "px";
+
+
+                infoBox.style.maxHeight =
+                    (
+                        dimensions.height /
+                        zoom
+                    ) + "px";
+
+
+                positionInfoBox();
+
+            }
+
+        }
+    );
+
+}
+
+
+
+/* ============================================================
+   REDIMENSIONNEMENT CLASSIQUE
    ============================================================ */
 
 window.addEventListener(
@@ -914,6 +1149,35 @@ window.addEventListener(
             infoBox.style.display ===
             "block"
         ) {
+
+            const zoom =
+                getBrowserZoom();
+
+
+            const dimensions =
+                getInfoDimensions();
+
+
+            infoBox.style.width =
+                (
+                    dimensions.width /
+                    zoom
+                ) + "px";
+
+
+            infoBox.style.maxWidth =
+                (
+                    dimensions.width /
+                    zoom
+                ) + "px";
+
+
+            infoBox.style.maxHeight =
+                (
+                    dimensions.height /
+                    zoom
+                ) + "px";
+
 
             positionInfoBox();
 
