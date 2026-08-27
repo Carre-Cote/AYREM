@@ -14,12 +14,12 @@
             background: #eeeeee;
         }
 
-        .plan-container {
-            position: relative;
-            width: 100%;
-            max-width: 1400px;
-            margin: 30px auto;
-        }
+.plan-container {
+    position: relative;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
 
         .plan {
             width: 100%;
@@ -31,7 +31,7 @@
 .hotspot {
     position: absolute;
 
-    width: 1%;
+    width: 0.7%;
     aspect-ratio: 1 / 1;
 
     border-radius: 50%;
@@ -49,39 +49,13 @@
     touch-action: manipulation;
 }
 
-/* Zone invisible autour de la pastille pour faciliter le clic */
-.hotspot::before {
-    content: "";
-
-    position: absolute;
-
-    width: 30px;
-    height: 30px;
-
-    left: 50%;
-    top: 50%;
-
-    transform: translate(-50%, -50%);
-
-    border-radius: 50%;
-}
-
-/* Agrandissement uniquement lorsque la souris passe dessus */
+/* Effet au survol sur ordinateur */
 .hotspot:hover {
     transform: translate(-50%, -50%) scale(1.5);
 }
 
-/* Téléphone */
-@media (max-width: 600px) {
 
-    .hotspot {
-        width: 18px;
-        height: 18px;
 
-        border-width: 2px;
-    }
-
-}
 
         .vasque {
             background: #4d8acb;
