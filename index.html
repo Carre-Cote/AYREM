@@ -273,27 +273,31 @@ body {
 
     position: fixed;
 
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
     z-index: 1000;
 
-    width: 450px;
+    /* Taille indépendante du zoom du plan */
+    width: min(650px, 90vw);
 
-    max-width:
-        calc(100vw - 30px);
+    height: auto;
 
-    max-height:
-        calc(100vh - 30px);
+    max-height: 85vh;
 
     box-sizing: border-box;
 
-    padding: 25px;
+    padding: 30px;
 
-    background: white;
+    background: #ffffff;
 
-    border-radius: 12px;
+    border-radius: 14px;
 
     box-shadow:
         0 10px 40px
-        rgba(0,0,0,0.25);
+        rgba(0,0,0,0.30);
 
     overflow-y: auto;
 
@@ -307,27 +311,29 @@ body {
 
 
 /* =========================================================
-   CONTENU FICHE
+   CONTENU
    ========================================================= */
 
 .info-box h2 {
 
     margin-top: 0;
 
-    padding-right: 25px;
+    margin-bottom: 25px;
 
-    font-size: 22px;
+    padding-right: 35px;
+
+    font-size: 24px;
 
 }
 
 
 .info-box h3 {
 
-    margin-top: 20px;
+    margin-top: 22px;
 
-    margin-bottom: 6px;
+    margin-bottom: 7px;
 
-    font-size: 16px;
+    font-size: 17px;
 
 }
 
@@ -336,9 +342,11 @@ body {
 
     margin-top: 0;
 
+    margin-bottom: 14px;
+
     line-height: 1.5;
 
-    font-size: 14px;
+    font-size: 15px;
 
 }
 
@@ -354,16 +362,18 @@ body {
     right: 12px;
     top: 8px;
 
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
 
-    line-height: 32px;
+    line-height: 36px;
 
     text-align: center;
 
-    font-size: 26px;
+    font-size: 28px;
 
     cursor: pointer;
+
+    z-index: 10;
 
 }
 
@@ -376,9 +386,13 @@ body {
 
     .info-box {
 
-        width: 360px;
+        width: 80vw;
 
-        padding: 20px;
+        max-width: 80vw;
+
+        max-height: 80vh;
+
+        padding: 24px;
 
     }
 
@@ -391,59 +405,35 @@ body {
 
 @media (max-width: 600px) {
 
-    .hotspot {
-
-        width: 18px !important;
-        height: 18px !important;
-
-        min-width: 18px !important;
-        min-height: 18px !important;
-
-        max-width: 18px !important;
-        max-height: 18px !important;
-
-        border-width: 1px;
-
-    }
-
-
-    .hotspot::before {
-
-        width: 50px;
-        height: 50px;
-
-    }
-
-
     .info-box {
 
-        width: 280px;
+        width: 88vw;
 
-        max-width:
-            calc(100vw - 20px);
+        max-width: 88vw;
 
-        max-height:
-            calc(100vh - 20px);
+        max-height: 75vh;
 
-        padding: 16px;
+        padding: 18px;
 
-        border-radius: 10px;
+        border-radius: 11px;
 
     }
 
 
     .info-box h2 {
 
-        font-size: 18px;
+        font-size: 19px;
+
+        margin-bottom: 18px;
 
     }
 
 
     .info-box h3 {
 
-        font-size: 14px;
+        font-size: 15px;
 
-        margin-top: 16px;
+        margin-top: 17px;
 
     }
 
@@ -452,7 +442,18 @@ body {
 
         font-size: 13px;
 
-        line-height: 1.4;
+        line-height: 1.45;
+
+    }
+
+
+    .close {
+
+        right: 8px;
+
+        top: 5px;
+
+        font-size: 25px;
 
     }
 
@@ -548,7 +549,21 @@ const rooms = {
         name: "Entrée de service",
         x: 50,
         y: 52,
-        color: "#6f42c1"
+        color: "#6f42c1",
+
+         content: `
+
+            <h2>Entrée de service</h2>
+
+            <h3>Sol</h3>
+
+            <p>
+                Carrelage XXX<br>
+                Fabricant : XXX<br>
+                Référence : XXX
+            </p>
+
+        `
     },
 
     "salle-sport": {
@@ -1632,56 +1647,18 @@ function findHotspotAt(
 }
 
 
-/* =========================================================
-   FICHES DES PIÈCES
-   =========================================================
 
-   Pour l'instant, toutes les fiches contiennent
-   simplement le nom de la pièce.
+function getInfoContent(id) {
 
-   Nous allons ensuite remplir chaque pièce
-   avec ses propres finitions et équipements.
-   ========================================================= */
+    const room = rooms[id];
 
-function getInfoContent(
-    id
-) {
+    if (!room) {
+        return "<p>Informations indisponibles.</p>";
+    }
 
-
-    const room =
-        rooms[id];
-
-
-    return `
-
-        <h2>
-            ${room.name}
-        </h2>
-
-        <h3>Sol</h3>
-
-        <p>
-            À définir
-        </p>
-
-        <h3>Murs</h3>
-
-        <p>
-            À définir
-        </p>
-
-        <h3>Plafond</h3>
-
-        <p>
-            À définir
-        </p>
-
-        <h3>Équipements</h3>
-
-        <p>
-            À définir
-        </p>
-
+    return room.content || `
+        <h2>${room.name}</h2>
+        <p>Aucune information renseignée pour cette pièce.</p>
     `;
 
 }
@@ -1691,54 +1668,13 @@ function getInfoContent(
    OUVERTURE FICHE
    ========================================================= */
 
-function showInfo(
-    id
-) {
-
+function showInfo(id) {
 
     infoContent.innerHTML =
-        getInfoContent(
-            id
-        );
-
+        getInfoContent(id);
 
     infoBox.style.display =
         "block";
-
-
-    requestAnimationFrame(
-        function() {
-
-
-            const width =
-                infoBox.offsetWidth;
-
-
-            const height =
-                infoBox.offsetHeight;
-
-
-            infoBox.style.left =
-                Math.max(
-                    10,
-                    (
-                        window.innerWidth -
-                        width
-                    ) / 2
-                ) + "px";
-
-
-            infoBox.style.top =
-                Math.max(
-                    10,
-                    (
-                        window.innerHeight -
-                        height
-                    ) / 2
-                ) + "px";
-
-        }
-    );
 
 }
 
@@ -1796,44 +1732,7 @@ window.addEventListener(
     "resize",
     function() {
 
-
         updatePlan();
-
-
-        if (
-            infoBox.style.display ===
-            "block"
-        ) {
-
-
-            const width =
-                infoBox.offsetWidth;
-
-
-            const height =
-                infoBox.offsetHeight;
-
-
-            infoBox.style.left =
-                Math.max(
-                    10,
-                    (
-                        window.innerWidth -
-                        width
-                    ) / 2
-                ) + "px";
-
-
-            infoBox.style.top =
-                Math.max(
-                    10,
-                    (
-                        window.innerHeight -
-                        height
-                    ) / 2
-                ) + "px";
-
-        }
 
     }
 );
