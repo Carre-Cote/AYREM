@@ -128,29 +128,18 @@ body {
    ========================================================= */
 
 .hotspot {
-
     position: absolute;
 
-    /*
-     * TAILLE FIXE À L'ÉCRAN
-     *
-     * Elle ne dépend PAS du zoom.
-     */
+    width: 24px !important;
+    height: 24px !important;
 
-    width: 20px !important;
+    min-width: 24px !important;
+    min-height: 24px !important;
 
-    height: 20px !important;
-
-    min-width: 20px !important;
-
-    min-height: 20px !important;
-
-    max-width: 20px !important;
-
-    max-height: 20px !important;
+    max-width: 24px !important;
+    max-height: 24px !important;
 
     margin: 0;
-
     padding: 0;
 
     box-sizing: border-box;
@@ -166,6 +155,70 @@ body {
     cursor: pointer;
 
     z-index: 101;
+}
+
+
+/* Zone tactile invisible */
+
+.hotspot::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 50px;
+    height: 50px;
+
+    transform: translate(-50%, -50%);
+
+    border-radius: 50%;
+
+}
+
+
+/* Survol uniquement sur PC */
+
+@media (hover: hover) {
+
+    .hotspot:hover {
+
+        transform:
+            translate(-50%, -50%)
+            scale(1.3);
+
+    }
+
+}
+
+
+/* Téléphone */
+
+@media (max-width: 600px) {
+
+    .hotspot {
+
+        width: 22px !important;
+        height: 22px !important;
+
+        min-width: 22px !important;
+        min-height: 22px !important;
+
+        max-width: 22px !important;
+        max-height: 22px !important;
+
+        border-width: 1px;
+
+    }
+
+    .hotspot::before {
+
+        width: 50px;
+        height: 50px;
+
+    }
 
 }
 
@@ -183,8 +236,8 @@ body {
     left: 50%;
     top: 50%;
 
-    width: 46px;
-    height: 46px;
+    width: 50px;
+    height: 50px;
 
     transform: translate(-50%, -50%);
 
@@ -194,39 +247,7 @@ body {
 
 
 /* =========================================================
-   COULEURS
-   ========================================================= */
-
-.vasque {
-
-    background: #4d8acb;
-
-}
-
-
-.wc {
-
-    background: #d9534f;
-
-}
-
-
-.douche {
-
-    background: #4caf7a;
-
-}
-
-
-.sol-mur {
-
-    background: #df9629;
-
-}
-
-
-/* =========================================================
-   SURVOL PC UNIQUEMENT
+   SURVOL PC
    ========================================================= */
 
 @media (hover: hover) {
@@ -286,7 +307,7 @@ body {
 
 
 /* =========================================================
-   CONTENU
+   CONTENU FICHE
    ========================================================= */
 
 .info-box h2 {
@@ -323,7 +344,7 @@ body {
 
 
 /* =========================================================
-   FERMETURE
+   BOUTON FERMER
    ========================================================= */
 
 .close {
@@ -452,8 +473,6 @@ body {
 <div id="viewer">
 
 
-    <!-- PLAN -->
-
     <div id="planLayer">
 
         <img
@@ -466,47 +485,18 @@ body {
     </div>
 
 
-    <!-- PASTILLES
-         IMPORTANT :
-         elles sont hors du plan.
+    <!--
+        LES PASTILLES SONT CRÉÉES AUTOMATIQUEMENT
+        PAR JAVASCRIPT
     -->
 
-    <div id="hotspotLayer">
-
-        <div
-            class="hotspot vasque"
-            data-id="vasque"
-            title="Vasque"
-        ></div>
-
-
-        <div
-            class="hotspot wc"
-            data-id="wc"
-            title="WC"
-        ></div>
-
-
-        <div
-            class="hotspot douche"
-            data-id="douche"
-            title="Douche"
-        ></div>
-
-
-        <div
-            class="hotspot sol-mur"
-            data-id="sol-mur"
-            title="Sol et mur"
-        ></div>
-
-    </div>
+    <div id="hotspotLayer"></div>
 
 </div>
 
 
 <!-- =========================================================
-     FENÊTRE
+     FENÊTRE D'INFORMATION
      ========================================================= -->
 
 <div
@@ -522,14 +512,105 @@ body {
     </span>
 
 
-    <div
-        id="infoContent"
-    ></div>
+    <div id="infoContent"></div>
 
 </div>
 
 
 <script>
+
+/* =========================================================
+   CONFIGURATION DES PIÈCES
+   =========================================================
+
+   C'EST PRINCIPALEMENT ICI QUE TU TRAVAILLERAS.
+
+   Pour ajouter une pièce :
+
+   "nom-interne": {
+
+       name: "Nom affiché",
+       x: XX,
+       y: XX,
+       color: "#XXXXXX"
+
+   }
+
+   x et y correspondent à la position en %
+   sur ton image originale.
+
+   ========================================================= */
+
+
+const rooms = {
+
+    "entree-service": {
+        name: "Entrée de service",
+        x: 50,
+        y: 52,
+        color: "#6f42c1"
+    },
+
+    "salle-sport": {
+        name: "Salle de sport / Salle de jeux",
+        x: 50,
+        y: 35,
+        color: "#e83e8c"
+    },
+
+    "cellier": {
+        name: "Cellier",
+        x: 63,
+        y: 53,
+        color: "#17a2b8"
+    },
+
+    "laverie": {
+        name: "Laverie",
+        x: 64,
+        y: 48,
+        color: "#20c997"
+    },
+
+    "local-technique": {
+        name: "Local technique",
+        x: 65,
+        y: 40,
+        color: "#6c757d"
+    },
+
+    "salle-eau-7": {
+        name: "Salle d'eau 7",
+        x: 57,
+        y: 27,
+        color: "#fd7e14"
+    },
+
+    /* AJOUTE TES NOUVELLES PIÈCES ICI en rajoutant une virgule après } de la pièce précédente */
+
+    "dgt-1": {
+        name: "Dgt 1",
+        x: 56,
+        y: 40,
+        color: "#d3e417"
+    },
+
+    "dortoir": {
+        name: "Dortoir",
+        x: 63,
+        y: 30,
+        color: "#e43917"
+    },
+
+    "garage": {
+        name: "Garage",
+        x: 55,
+        y: 63,
+        color: "#79e70d"
+    },
+
+};
+
 
 /* =========================================================
    ELEMENTS
@@ -553,6 +634,12 @@ const plan =
     );
 
 
+const hotspotLayer =
+    document.getElementById(
+        "hotspotLayer"
+    );
+
+
 const infoBox =
     document.getElementById(
         "infoBox"
@@ -571,12 +658,6 @@ const closeButton =
     );
 
 
-const hotspots =
-    document.querySelectorAll(
-        ".hotspot"
-    );
-
-
 /* =========================================================
    DIMENSIONS IMAGE
    ========================================================= */
@@ -587,7 +668,7 @@ let imageHeight = 0;
 
 
 /* =========================================================
-   ZOOM
+   ZOOM / POSITION
    ========================================================= */
 
 let scale = 1;
@@ -597,90 +678,118 @@ let offsetX = 0;
 let offsetY = 0;
 
 
-const MIN_SCALE = 0.05;
-
-const MAX_SCALE = 8;
-
-
-/* =========================================================
-   COORDONNEES DES PASTILLES
-   =========================================================
-
-   IMPORTANT :
-
-   Les coordonnées restent en % du PNG original.
-
-   Tu peux donc continuer à positionner
-   tes pastilles comme avant.
-   ========================================================= */
-
-const hotspotPositions = {
-
-    vasque: {
-
-        x: 55,
-        y: 30
-
-    },
+const MIN_SCALE =
+    0.05;
 
 
-    wc: {
-
-        x: 58,
-        y: 25
-
-    },
-
-
-    douche: {
-
-        x: 56,
-        y: 26
-
-    },
-
-
-    "sol-mur": {
-
-        x: 58,
-        y: 30
-
-    }
-
-};
+const MAX_SCALE =
+    8;
 
 
 /* =========================================================
-   CHARGEMENT DU PLAN
+   CRÉATION AUTOMATIQUE DES PASTILLES
    ========================================================= */
 
-plan.onload = function() {
+const hotspotElements = {};
 
 
-    imageWidth =
-        plan.naturalWidth;
+function createHotspots() {
 
 
-    imageHeight =
-        plan.naturalHeight;
+    Object.keys(rooms).forEach(
+        function(id) {
 
 
-    /*
-     * On conserve la résolution
-     * originale du PNG.
-     */
-
-    plan.width =
-        imageWidth;
+            const room =
+                rooms[id];
 
 
-    plan.height =
-        imageHeight;
+            const hotspot =
+                document.createElement(
+                    "div"
+                );
 
 
-    fitPlan();
+            hotspot.className =
+                "hotspot";
 
-};
+
+            hotspot.dataset.id =
+                id;
+
+
+            hotspot.title =
+                room.name;
+
+
+            hotspot.style.backgroundColor =
+                room.color;
+
+
+            hotspotLayer.appendChild(
+                hotspot
+            );
+
+
+            hotspotElements[id] =
+                hotspot;
+
+
+            /*
+             * Clic souris
+             */
+
+            hotspot.addEventListener(
+                "click",
+                function(event) {
+
+                    event.stopPropagation();
+
+                    showInfo(id);
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CHARGEMENT IMAGE
+   ========================================================= */
+
+plan.onload =
+    function() {
+
+
+        imageWidth =
+            plan.naturalWidth;
+
+
+        imageHeight =
+            plan.naturalHeight;
+
+
+        /*
+         * On utilise la résolution
+         * originale du PNG.
+         */
+
+        plan.width =
+            imageWidth;
+
+
+        plan.height =
+            imageHeight;
+
+
+        createHotspots();
+
+        fitPlan();
+
+    };
 
 
 /* =========================================================
@@ -718,14 +827,16 @@ function fitPlan() {
     offsetX =
         (
             viewerWidth -
-            imageWidth * scale
+            imageWidth *
+            scale
         ) / 2;
 
 
     offsetY =
         (
             viewerHeight -
-            imageHeight * scale
+            imageHeight *
+            scale
         ) / 2;
 
 
@@ -735,7 +846,7 @@ function fitPlan() {
 
 
 /* =========================================================
-   MISE À JOUR DU PLAN
+   MISE À JOUR PLAN
    ========================================================= */
 
 function updatePlan() {
@@ -758,25 +869,25 @@ function updatePlan() {
 
 
 /* =========================================================
-   MISE À JOUR DES PASTILLES
+   POSITION DES PASTILLES
    ========================================================= */
 
 function updateHotspots() {
 
 
-    hotspots.forEach(
-        function(hotspot) {
+    Object.keys(rooms).forEach(
+        function(id) {
 
 
-            const id =
-                hotspot.dataset.id;
+            const room =
+                rooms[id];
 
 
-            const pos =
-                hotspotPositions[id];
+            const hotspot =
+                hotspotElements[id];
 
 
-            if (!pos) {
+            if (!hotspot) {
 
                 return;
 
@@ -784,23 +895,23 @@ function updateHotspots() {
 
 
             /*
-             * Position dans l'image originale.
+             * Coordonnées sur l'image
              */
 
             const imageX =
                 imageWidth *
-                pos.x /
+                room.x /
                 100;
 
 
             const imageY =
                 imageHeight *
-                pos.y /
+                room.y /
                 100;
 
 
             /*
-             * Position écran.
+             * Coordonnées écran
              */
 
             const screenX =
@@ -814,13 +925,6 @@ function updateHotspots() {
                 imageY *
                 scale;
 
-
-            /*
-             * La position dépend du zoom.
-             *
-             * La taille, elle, reste fixe
-             * grâce au CSS.
-             */
 
             hotspot.style.left =
                 screenX + "px";
@@ -836,7 +940,7 @@ function updateHotspots() {
 
 
 /* =========================================================
-   ZOOM AUTOUR D'UN POINT
+   ZOOM AUTOUR DU CURSEUR / DOIGT
    ========================================================= */
 
 function zoomAt(
@@ -895,18 +999,29 @@ function zoomAt(
    SOURIS
    ========================================================= */
 
-let mouseDown = false;
+let mouseDown =
+    false;
 
-let mouseMoved = false;
 
-let mouseStartX = 0;
+let mouseStartX =
+    0;
 
-let mouseStartY = 0;
 
-let initialOffsetX = 0;
+let mouseStartY =
+    0;
 
-let initialOffsetY = 0;
 
+let initialOffsetX =
+    0;
+
+
+let initialOffsetY =
+    0;
+
+
+/* ---------------------------------------------------------
+   SOURIS — DOWN
+   --------------------------------------------------------- */
 
 viewer.addEventListener(
     "mousedown",
@@ -922,15 +1037,9 @@ viewer.addEventListener(
         }
 
 
-        /*
-         * Si la souris est directement
-         * sur une pastille, on laisse
-         * le système de clic gérer.
-         */
-
         if (
-            event.target.classList.contains(
-                "hotspot"
+            event.target.closest(
+                ".hotspot"
             )
         ) {
 
@@ -939,9 +1048,8 @@ viewer.addEventListener(
         }
 
 
-        mouseDown = true;
-
-        mouseMoved = false;
+        mouseDown =
+            true;
 
 
         mouseStartX =
@@ -968,9 +1076,9 @@ viewer.addEventListener(
 );
 
 
-/* =========================================================
-   SOURIS — DEPLACEMENT
-   ========================================================= */
+/* ---------------------------------------------------------
+   SOURIS — MOVE
+   --------------------------------------------------------- */
 
 window.addEventListener(
     "mousemove",
@@ -984,34 +1092,20 @@ window.addEventListener(
         }
 
 
-        const dx =
-            event.clientX -
-            mouseStartX;
-
-
-        const dy =
-            event.clientY -
-            mouseStartY;
-
-
-        if (
-            Math.abs(dx) > 3 ||
-            Math.abs(dy) > 3
-        ) {
-
-            mouseMoved = true;
-
-        }
-
-
         offsetX =
             initialOffsetX +
-            dx;
+            (
+                event.clientX -
+                mouseStartX
+            );
 
 
         offsetY =
             initialOffsetY +
-            dy;
+            (
+                event.clientY -
+                mouseStartY
+            );
 
 
         updatePlan();
@@ -1020,23 +1114,17 @@ window.addEventListener(
 );
 
 
-/* =========================================================
-   SOURIS — FIN
-   ========================================================= */
+/* ---------------------------------------------------------
+   SOURIS — UP
+   --------------------------------------------------------- */
 
 window.addEventListener(
     "mouseup",
     function() {
 
 
-        if (!mouseDown) {
-
-            return;
-
-        }
-
-
-        mouseDown = false;
+        mouseDown =
+            false;
 
 
         viewer.classList.remove(
@@ -1101,25 +1189,36 @@ viewer.addEventListener(
    TOUCH
    ========================================================= */
 
-let touchMode = null;
+let touchMode =
+    null;
 
-let touchStartX = 0;
 
-let touchStartY = 0;
+let touchStartX =
+    0;
 
-let touchInitialOffsetX = 0;
 
-let touchInitialOffsetY = 0;
+let touchStartY =
+    0;
 
-let pinchStartDistance = 0;
 
-let pinchStartScale = 1;
+let touchInitialOffsetX =
+    0;
 
-let pinchCenterX = 0;
 
-let pinchCenterY = 0;
+let touchInitialOffsetY =
+    0;
 
-let touchMoved = false;
+
+let pinchStartDistance =
+    0;
+
+
+let pinchStartScale =
+    1;
+
+
+let touchMoved =
+    false;
 
 
 /* =========================================================
@@ -1130,11 +1229,6 @@ viewer.addEventListener(
     "touchstart",
     function(event) {
 
-
-        /*
-         * Deux doigts :
-         * PINCH
-         */
 
         if (
             event.touches.length === 2
@@ -1160,30 +1254,10 @@ viewer.addEventListener(
                 scale;
 
 
-            const center =
-                getTouchCenter(
-                    event.touches[0],
-                    event.touches[1]
-                );
-
-
-            pinchCenterX =
-                center.x;
-
-
-            pinchCenterY =
-                center.y;
-
-
             return;
 
         }
 
-
-        /*
-         * Un doigt :
-         * déplacement potentiel
-         */
 
         if (
             event.touches.length === 1
@@ -1251,25 +1325,22 @@ viewer.addEventListener(
                 );
 
 
-            const center =
-                getTouchCenter(
-                    event.touches[0],
-                    event.touches[1]
-                );
+            const centerX =
+                (
+                    event.touches[0].clientX +
+                    event.touches[1].clientX
+                ) / 2;
+
+
+            const centerY =
+                (
+                    event.touches[0].clientY +
+                    event.touches[1].clientY
+                ) / 2;
 
 
             const rect =
                 viewer.getBoundingClientRect();
-
-
-            const centerX =
-                center.x -
-                rect.left;
-
-
-            const centerY =
-                center.y -
-                rect.top;
 
 
             const newScale =
@@ -1282,9 +1353,11 @@ viewer.addEventListener(
 
             zoomAt(
 
-                centerX,
+                centerX -
+                rect.left,
 
-                centerY,
+                centerY -
+                rect.top,
 
                 newScale
 
@@ -1297,7 +1370,7 @@ viewer.addEventListener(
 
 
         /*
-         * DEPLACEMENT
+         * DÉPLACEMENT
          */
 
         if (
@@ -1358,10 +1431,9 @@ viewer.addEventListener(
 
 
         /*
-         * Si le doigt n'a pratiquement
-         * pas bougé :
-         *
-         * on cherche une pastille.
+         * Si le doigt n'a presque pas bougé,
+         * on considère qu'il s'agit d'un clic
+         * sur une pastille.
          */
 
         if (
@@ -1375,17 +1447,15 @@ viewer.addEventListener(
 
 
             findHotspotAt(
+
                 touch.clientX,
+
                 touch.clientY
+
             );
 
         }
 
-
-        /*
-         * Si on revient à un seul doigt
-         * après un pinch.
-         */
 
         if (
             event.touches.length === 1
@@ -1416,20 +1486,21 @@ viewer.addEventListener(
                 offsetY;
 
 
-            return;
+        }
+        else {
+
+
+            touchMode =
+                null;
 
         }
-
-
-        touchMode =
-            null;
 
     }
 );
 
 
 /* =========================================================
-   DISTANCE PINCH
+   DISTANCE ENTRE DEUX DOIGTS
    ========================================================= */
 
 function getDistance(
@@ -1457,36 +1528,7 @@ function getDistance(
 
 
 /* =========================================================
-   CENTRE PINCH
-   ========================================================= */
-
-function getTouchCenter(
-    a,
-    b
-) {
-
-
-    return {
-
-        x:
-            (
-                a.clientX +
-                b.clientX
-            ) / 2,
-
-        y:
-            (
-                a.clientY +
-                b.clientY
-            ) / 2
-
-    };
-
-}
-
-
-/* =========================================================
-   RECHERCHE PASTILLE
+   RECHERCHE DE PASTILLE
    ========================================================= */
 
 function findHotspotAt(
@@ -1494,14 +1536,6 @@ function findHotspotAt(
     screenY
 ) {
 
-
-    /*
-     * Rayon tactile généreux.
-     *
-     * La pastille visible peut être
-     * petite, mais la zone de clic
-     * est beaucoup plus grande.
-     */
 
     const hitRadius =
         30;
@@ -1515,27 +1549,23 @@ function findHotspotAt(
         Infinity;
 
 
-    hotspots.forEach(
-        function(hotspot) {
+    Object.keys(rooms).forEach(
+        function(id) {
 
 
-            const id =
-                hotspot.dataset.id;
-
-
-            const pos =
-                hotspotPositions[id];
+            const room =
+                rooms[id];
 
 
             const imageX =
                 imageWidth *
-                pos.x /
+                room.x /
                 100;
 
 
             const imageY =
                 imageHeight *
-                pos.y /
+                room.y /
                 100;
 
 
@@ -1593,7 +1623,6 @@ function findHotspotAt(
         selected
     ) {
 
-
         showInfo(
             selected
         );
@@ -1604,208 +1633,56 @@ function findHotspotAt(
 
 
 /* =========================================================
-   CLIC SOURIS DIRECT SUR PASTILLE
-   ========================================================= */
+   FICHES DES PIÈCES
+   =========================================================
 
-hotspots.forEach(
-    function(hotspot) {
+   Pour l'instant, toutes les fiches contiennent
+   simplement le nom de la pièce.
 
-
-        hotspot.addEventListener(
-            "click",
-            function(event) {
-
-
-                event.stopPropagation();
-
-
-                showInfo(
-                    hotspot.dataset.id
-                );
-
-            }
-        );
-
-    }
-);
-
-
-/* =========================================================
-   CONTENU DES FICHES
+   Nous allons ensuite remplir chaque pièce
+   avec ses propres finitions et équipements.
    ========================================================= */
 
 function getInfoContent(
-    type
+    id
 ) {
 
 
-    if (
-        type === "vasque"
-    ) {
+    const room =
+        rooms[id];
 
 
-        return `
+    return `
 
-            <h2>Vasque — SDB 01</h2>
+        <h2>
+            ${room.name}
+        </h2>
 
-            <h3>Meuble</h3>
+        <h3>Sol</h3>
 
-            <p>
-                Meuble vasque 120 cm<br>
-                Fabricant : XXX<br>
-                Référence : XXX
-            </p>
+        <p>
+            À définir
+        </p>
 
-            <h3>Vasque</h3>
+        <h3>Murs</h3>
 
-            <p>
-                Vasque à poser<br>
-                Fabricant : XXX<br>
-                Référence : XXX
-            </p>
+        <p>
+            À définir
+        </p>
 
-            <h3>Mitigeur</h3>
+        <h3>Plafond</h3>
 
-            <p>
-                Mitigeur lavabo<br>
-                Fabricant : XXX<br>
-                Référence : XXX
-            </p>
+        <p>
+            À définir
+        </p>
 
-            <h3>Miroir</h3>
+        <h3>Équipements</h3>
 
-            <p>
-                Miroir 120 × 80 cm<br>
-                Fabricant : XXX<br>
-                Référence : XXX
-            </p>
+        <p>
+            À définir
+        </p>
 
-        `;
-
-    }
-
-
-    if (
-        type === "wc"
-    ) {
-
-
-        return `
-
-            <h2>WC — SDB 01</h2>
-
-            <h3>Bâti-support</h3>
-
-            <p>
-                Fabricant : XXX<br>
-                Modèle : XXX<br>
-                Référence : XXX
-            </p>
-
-            <h3>Cuvette suspendue</h3>
-
-            <p>
-                Fabricant : XXX<br>
-                Modèle : XXX<br>
-                Référence : XXX
-            </p>
-
-            <h3>Plaque de commande</h3>
-
-            <p>
-                Fabricant : XXX<br>
-                Modèle : XXX<br>
-                Finition : XXX
-            </p>
-
-        `;
-
-    }
-
-
-    if (
-        type === "douche"
-    ) {
-
-
-        return `
-
-            <h2>Douche — SDB 01</h2>
-
-            <h3>Receveur</h3>
-
-            <p>
-                Receveur 120 × 90 cm<br>
-                Fabricant : XXX<br>
-                Référence : XXX
-            </p>
-
-            <h3>Mitigeur</h3>
-
-            <p>
-                Fabricant : XXX<br>
-                Référence : XXX
-            </p>
-
-            <h3>Colonne de douche</h3>
-
-            <p>
-                Fabricant : XXX<br>
-                Référence : XXX
-            </p>
-
-            <h3>Faïence</h3>
-
-            <p>
-                Fabricant : XXX<br>
-                Référence : XXX<br>
-                Format : 60 × 120 cm
-            </p>
-
-        `;
-
-    }
-
-
-    if (
-        type === "sol-mur"
-    ) {
-
-
-        return `
-
-            <h2>Sol et mur — SDB 01</h2>
-
-            <h3>Carrelage</h3>
-
-            <p>
-                Carrelage 60 × 60 cm<br>
-                Fabricant : XXX<br>
-                Référence : XXX
-            </p>
-
-            <h3>Faïence</h3>
-
-            <p>
-                Faïence douche 60 × 120 cm<br>
-                Fabricant : XXX<br>
-                Référence : XXX
-            </p>
-
-            <h3>Crédence</h3>
-
-            <p>
-                Crédence meuble vasque 10 × 10 cm<br>
-                Fabricant : XXX<br>
-                Référence : XXX
-            </p>
-
-        `;
-
-    }
-
-
-    return "";
+    `;
 
 }
 
@@ -1815,27 +1692,19 @@ function getInfoContent(
    ========================================================= */
 
 function showInfo(
-    type
+    id
 ) {
 
 
     infoContent.innerHTML =
         getInfoContent(
-            type
+            id
         );
 
 
     infoBox.style.display =
         "block";
 
-
-    /*
-     * On centre la fiche
-     * dans l'écran.
-     *
-     * Elle est indépendante
-     * du zoom du plan.
-     */
 
     requestAnimationFrame(
         function() {
@@ -1849,32 +1718,24 @@ function showInfo(
                 infoBox.offsetHeight;
 
 
-            const left =
+            infoBox.style.left =
                 Math.max(
                     10,
                     (
                         window.innerWidth -
                         width
                     ) / 2
-                );
+                ) + "px";
 
 
-            const top =
+            infoBox.style.top =
                 Math.max(
                     10,
                     (
                         window.innerHeight -
                         height
                     ) / 2
-                );
-
-
-            infoBox.style.left =
-                left + "px";
-
-
-            infoBox.style.top =
-                top + "px";
+                ) + "px";
 
         }
     );
@@ -1907,7 +1768,7 @@ closeButton.addEventListener(
 
 
 /* =========================================================
-   ECHAP
+   TOUCHE ECHAP
    ========================================================= */
 
 document.addEventListener(
@@ -1934,6 +1795,7 @@ document.addEventListener(
 window.addEventListener(
     "resize",
     function() {
+
 
         updatePlan();
 
