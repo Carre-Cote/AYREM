@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -11,7 +10,7 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
 >
 
-<title>Carré Côté - Plan interactif</title>
+<title>Carré Côté - Plans interactifs AYREM</title>
 
 
 <style>
@@ -62,6 +61,104 @@ body {
 #viewer.dragging {
 
     cursor: grabbing;
+
+}
+
+
+/* =========================================================
+   SELECTEUR D'ETAGE
+   ========================================================= */
+
+#floorSelector {
+
+    position: fixed;
+
+    top: 15px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    display: flex;
+
+    gap: 6px;
+
+    padding: 6px;
+
+    background: rgba(255,255,255,0.95);
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 4px 18px
+        rgba(0,0,0,0.20);
+
+    z-index: 500;
+
+}
+
+
+.floor-button {
+
+    border: none;
+
+    background: #eeeeee;
+
+    color: #333333;
+
+    padding: 9px 16px;
+
+    border-radius: 7px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        transform 0.15s ease;
+
+}
+
+
+.floor-button:hover {
+
+    transform: scale(1.03);
+
+}
+
+
+.floor-button.active {
+
+    background: #333333;
+
+    color: white;
+
+}
+
+
+@media (max-width: 600px) {
+
+    #floorSelector {
+
+        top: 10px;
+
+        gap: 4px;
+
+        padding: 5px;
+
+    }
+
+
+    .floor-button {
+
+        padding: 8px 12px;
+
+        font-size: 13px;
+
+    }
 
 }
 
@@ -128,6 +225,7 @@ body {
    ========================================================= */
 
 .hotspot {
+
     position: absolute;
 
     width: 24px !important;
@@ -148,17 +246,17 @@ body {
 
     border: 2px solid white;
 
-    transform: translate(-50%, -50%);
+    transform:
+        translate(-50%, -50%);
 
     pointer-events: auto;
 
     cursor: pointer;
 
     z-index: 101;
+
 }
 
-
-/* Zone tactile invisible */
 
 .hotspot::before {
 
@@ -172,83 +270,13 @@ body {
     width: 50px;
     height: 50px;
 
-    transform: translate(-50%, -50%);
+    transform:
+        translate(-50%, -50%);
 
     border-radius: 50%;
 
 }
 
-
-/* Survol uniquement sur PC */
-
-@media (hover: hover) {
-
-    .hotspot:hover {
-
-        transform:
-            translate(-50%, -50%)
-            scale(1.3);
-
-    }
-
-}
-
-
-/* Téléphone */
-
-@media (max-width: 600px) {
-
-    .hotspot {
-
-        width: 22px !important;
-        height: 22px !important;
-
-        min-width: 22px !important;
-        min-height: 22px !important;
-
-        max-width: 22px !important;
-        max-height: 22px !important;
-
-        border-width: 1px;
-
-    }
-
-    .hotspot::before {
-
-        width: 50px;
-        height: 50px;
-
-    }
-
-}
-
-
-/* =========================================================
-   ZONE DE CLIC INVISIBLE
-   ========================================================= */
-
-.hotspot::before {
-
-    content: "";
-
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    width: 50px;
-    height: 50px;
-
-    transform: translate(-50%, -50%);
-
-    border-radius: 50%;
-
-}
-
-
-/* =========================================================
-   SURVOL PC
-   ========================================================= */
 
 @media (hover: hover) {
 
@@ -264,7 +292,7 @@ body {
 
 
 /* =========================================================
-   FENÊTRE D'INFORMATION
+   FENETRE D'INFORMATION
    ========================================================= */
 
 .info-box {
@@ -276,16 +304,18 @@ body {
     left: 50%;
     top: 50%;
 
-    transform: translate(-50%, -50%);
+    transform:
+        translate(-50%, -50%);
 
     z-index: 1000;
 
-    /* Taille indépendante du zoom du plan */
-    width: min(650px, 90vw);
+    width:
+        min(650px, 90vw);
 
     height: auto;
 
-    max-height: 85vh;
+    max-height:
+        85vh;
 
     box-sizing: border-box;
 
@@ -311,7 +341,7 @@ body {
 
 
 /* =========================================================
-   CONTENU
+   CONTENU FICHE
    ========================================================= */
 
 .info-box h2 {
@@ -405,6 +435,30 @@ body {
 
 @media (max-width: 600px) {
 
+    .hotspot {
+
+        width: 22px !important;
+        height: 22px !important;
+
+        min-width: 22px !important;
+        min-height: 22px !important;
+
+        max-width: 22px !important;
+        max-height: 22px !important;
+
+        border-width: 1px;
+
+    }
+
+
+    .hotspot::before {
+
+        width: 50px;
+        height: 50px;
+
+    }
+
+
     .info-box {
 
         width: 88vw;
@@ -468,6 +522,36 @@ body {
 
 
 <!-- =========================================================
+     SELECTEUR D'ETAGE
+     ========================================================= -->
+
+<div id="floorSelector">
+
+    <button
+        class="floor-button active"
+        data-floor="rdc"
+    >
+        RDC
+    </button>
+
+    <button
+        class="floor-button"
+        data-floor="rdj"
+    >
+        RDJ
+    </button>
+
+    <button
+        class="floor-button"
+        data-floor="r1"
+    >
+        R+1
+    </button>
+
+</div>
+
+
+<!-- =========================================================
      VISUALISEUR
      ========================================================= -->
 
@@ -478,7 +562,7 @@ body {
 
         <img
             id="plan"
-            src="PCG AYREM - RDC ind2 - 2026-07-02.png"
+            src="plan-rdc-ind2-2026-07-02.png"
             alt="Plan RDC"
             draggable="false"
         >
@@ -486,18 +570,13 @@ body {
     </div>
 
 
-    <!--
-        LES PASTILLES SONT CRÉÉES AUTOMATIQUEMENT
-        PAR JAVASCRIPT
-    -->
-
     <div id="hotspotLayer"></div>
 
 </div>
 
 
 <!-- =========================================================
-     FENÊTRE D'INFORMATION
+     FENETRE D'INFORMATION
      ========================================================= -->
 
 <div
@@ -521,281 +600,573 @@ body {
 <script>
 
 /* =========================================================
-   CONFIGURATION DES PIÈCES
+   CONFIGURATION DES ETAGES
    =========================================================
 
-   C'EST PRINCIPALEMENT ICI QUE TU TRAVAILLERAS.
+   Chaque étage possède :
+
+   - son nom
+   - son fichier image
+   - sa liste de pièces
 
    Pour ajouter une pièce :
-
+   
    "nom-interne": {
 
        name: "Nom affiché",
        x: XX,
        y: XX,
-       color: "#XXXXXX"
+       color: "#XXXXXX",
 
+       content: `
+           <h2>Nom de la pièce</h2>
+
+           ...
+       `
    }
 
-   x et y correspondent à la position en %
-   sur ton image originale.
+   x et y = position en % sur le PNG original.
 
    ========================================================= */
 
 
-const rooms = {
+const floors = {
 
-    "entree-service": {
-        name: "Entrée de service",
-        x: 50,
-        y: 52,
-        color: "#6f42c1",
 
-         content: `
+    /* =====================================================
+       RDC
+       ===================================================== */
 
-            <h2>Entrée de service</h2>
+    rdc: {
 
-            <h3>Revêtements</h3>
+        name: "RDC",
 
-            <p>
-            • Sol : Carrelage à définir <br>
-            • Plinthes : Assorties au carrelage <br>
-            • Peintures / papiers peints : seront définies sur chantier lors d’une réunion
-            </p>
+        image:
+            "plan-rdc-ind2-2026-07-02.png",
 
-            <h3>Equipements</h3>
+        rooms: {
 
-            <p>
-            • Agencements de placards et façades de placards : à définir
-            </p>
 
-        `
+            "entree-service": {
+
+                name:
+                    "Entrée de service",
+
+                x: 50,
+                y: 52,
+
+                color:
+                    "#6f42c1",
+
+                content: `
+
+                    <h2>
+                        Entrée de service
+                    </h2>
+
+
+                    <h3>
+                        Revêtements
+                    </h3>
+
+                    <p>
+                        • Sol : Carrelage à définir <br>
+                        • Plinthes : Assorties au carrelage <br>
+                        • Peintures / papiers peints :
+                        seront définies sur chantier lors
+                        d’une réunion
+                    </p>
+
+
+                    <h3>
+                        Equipements
+                    </h3>
+
+                    <p>
+                        • Agencements de placards et façades
+                        de placards : à définir
+                    </p>
+
+                `
+
+            },
+
+
+            "salle-sport": {
+
+                name:
+                    "Salle de sport / Salle de jeux",
+
+                x: 50,
+                y: 35,
+
+                color:
+                    "#e83e8c",
+
+                content: `
+
+                    <h2>
+                        Salle de sport / Salle de jeux
+                    </h2>
+
+
+                    <h3>
+                        Revêtements
+                    </h3>
+
+                    <p>
+                        • Sol : Carrelage à définir <br>
+                        • Plinthes : Assorties au carrelage <br>
+                        • Peintures / papiers peints :
+                        seront définies sur chantier lors
+                        d’une réunion
+                    </p>
+
+                `
+
+            },
+
+
+            "cellier": {
+
+                name:
+                    "Cellier",
+
+                x: 63,
+                y: 53,
+
+                color:
+                    "#17a2b8",
+
+                content: `
+
+                    <h2>
+                        Cellier
+                    </h2>
+
+
+                    <h3>
+                        Revêtements
+                    </h3>
+
+                    <p>
+                        • Sol : Carrelage à définir <br>
+                        • Plinthes : Assorties au carrelage <br>
+                        • Peintures :
+                        seront définies sur chantier lors
+                        d’une réunion
+                    </p>
+
+
+                    <h3>
+                        Equipements
+                    </h3>
+
+                    <p>
+                        • Aménagements / rangements
+                        à définir
+                    </p>
+
+                `
+
+            },
+
+
+            "laverie": {
+
+                name:
+                    "Laverie",
+
+                x: 64,
+                y: 48,
+
+                color:
+                    "#20c997",
+
+                content: `
+
+                    <h2>
+                        Laverie
+                    </h2>
+
+
+                    <h3>
+                        Revêtements
+                    </h3>
+
+                    <p>
+                        • Sol : Carrelage à définir <br>
+                        • Plinthes : Assorties au carrelage <br>
+                        • Peintures :
+                        seront définies sur chantier lors
+                        d’une réunion
+                    </p>
+
+
+                    <h3>
+                        Equipements
+                    </h3>
+
+                    <p>
+                        • Aménagements / rangements
+                        à définir <br>
+
+                        • Évier / bac de lavage :
+                        à définir <br>
+
+                        • Robinetterie :
+                        à définir <br>
+
+                        • Plan de travail / crédence :
+                        à définir
+                    </p>
+
+                `
+
+            },
+
+
+            "local-technique": {
+
+                name:
+                    "Local technique",
+
+                x: 65,
+                y: 40,
+
+                color:
+                    "#6c757d",
+
+                content: `
+
+                    <h2>
+                        Local technique
+                    </h2>
+
+
+                    <h3>
+                        Revêtements
+                    </h3>
+
+                    <p>
+                        • Sol : Carrelage à définir <br>
+                        • Plinthes : Assorties au carrelage <br>
+                        • Peintures :
+                        seront définies sur chantier lors
+                        d’une réunion
+                    </p>
+
+                `
+
+            },
+
+
+            "salle-eau-7": {
+
+                name:
+                    "Salle d'eau 7",
+
+                x: 57,
+                y: 27,
+
+                color:
+                    "#fd7e14",
+
+                content: `
+
+                    <h2>
+                        Salle d'eau 7
+                    </h2>
+
+
+                    <h3>
+                        Sanitaires
+                    </h3>
+
+                    <p>
+                        • Nombre de vasques : 1 <br>
+                        • Modèle de vasque : à définir <br>
+                        • Meuble vasque : à définir <br>
+                        • Nombre de robinets : 1 <br>
+                        • Modèle de robinetterie :
+                        à définir <br>
+                        • Miroir : à définir <br>
+                        • Miroir rétroéclairé ou applique :
+                        à définir
+                    </p>
+
+
+                    <h3>
+                        Douche
+                    </h3>
+
+                    <p>
+                        • Receveur : à définir <br>
+                        • Robinetterie de douche :
+                        à définir <br>
+                        • Douchette et/ou douche de tête :
+                        à définir <br>
+                        • Paroi et porte de douche :
+                        à définir <br>
+                        • Niche : à confirmer
+                    </p>
+
+
+                    <h3>
+                        Revêtements
+                    </h3>
+
+                    <p>
+                        • Sol : Carrelage à définir <br>
+                        • Plinthes : Assorties au carrelage <br>
+                        • Peintures / papiers peints :
+                        seront définies sur chantier lors
+                        d’une réunion <br>
+                        • Faïence murale : à définir <br>
+                        • Zones faïencées / hauteur :
+                        à définir
+                    </p>
+
+
+                    <h3>
+                        Accessoires
+                    </h3>
+
+                    <p>
+                        • Sèche-serviettes : à définir
+                    </p>
+
+                `
+
+            },
+
+
+            "dgt-1": {
+
+                name:
+                    "Dgt 1",
+
+                x: 56,
+                y: 40,
+
+                color:
+                    "#d3e417",
+
+                content: `
+
+                    <h2>
+                        Dgt 1
+                    </h2>
+
+
+                    <h3>
+                        Revêtements
+                    </h3>
+
+                    <p>
+                        • Sol : Carrelage à définir <br>
+                        • Plinthes : Assorties au carrelage <br>
+                        • Peintures / papiers peints :
+                        seront définies sur chantier lors
+                        d’une réunion
+                    </p>
+
+                `
+
+            },
+
+
+            "dortoir": {
+
+                name:
+                    "Dortoir",
+
+                x: 63,
+                y: 30,
+
+                color:
+                    "#e43917",
+
+                content: `
+
+                    <h2>
+                        Dortoir
+                    </h2>
+
+
+                    <h3>
+                        Revêtements
+                    </h3>
+
+                    <p>
+                        • Sol : Carrelage à définir <br>
+                        • Plinthes : Assorties au carrelage <br>
+                        • Peintures / papiers peints :
+                        seront définies sur chantier lors
+                        d’une réunion
+                    </p>
+
+
+                    <h3>
+                        Equipements
+                    </h3>
+
+                    <p>
+                        • Agencements de placards et façades
+                        de placards : à définir <br>
+
+                        • Store intérieur : à définir
+                    </p>
+
+                `
+
+            },
+
+
+            "garage": {
+
+                name:
+                    "Garage",
+
+                x: 55,
+                y: 63,
+
+                color:
+                    "#79e70d",
+
+                content: `
+
+                    <h2>
+                        Garage
+                    </h2>
+
+
+                    <h3>
+                        Revêtements
+                    </h3>
+
+                    <p>
+                        • Sol : ragréage <br>
+                        • Plinthes : pas de plinthe <br>
+                        • Peintures :
+                        seront définies sur chantier lors
+                        d’une réunion
+                    </p>
+
+                `
+
+            }
+
+        }
+
     },
 
-    "salle-sport": {
-        name: "Salle de sport / Salle de jeux",
-        x: 50,
-        y: 35,
-        color: "#e83e8c",
 
-         content: `
+    /* =====================================================
+       RDJ
+       ===================================================== */
 
-            <h2>Salle de sport / Salle de jeux</h2>
+    rdj: {
 
-            <h3>Revêtements</h3>
+        name:
+            "RDJ",
 
-            <p>
-            • Sol : Carrelage à définir <br>
-            • Plinthes : Assorties au carrelage <br>
-            • Peintures / papiers peints : seront définies sur chantier lors d’une réunion
-            </p>
+        image:
+            "plan-rdj-ind2-2026-07-02.png",
 
-        `
-    },
+        rooms: {
 
-    "cellier": {
-        name: "Cellier",
-        x: 63,
-        y: 53,
-        color: "#17a2b8",
 
-         content: `
+          "entrée": {
 
-            <h2>Cellier</h2>
+                name:
+                    "Entrée",
 
-            <h3>Revêtements</h3>
+                x: 50,
+                y: 50,
 
-            <p>
-            • Sol : Carrelage à définir <br>
-            • Plinthes : Assorties au carrelage <br>
-            • Peintures : seront définies sur chantier lors d’une réunion
-            </p>
+                color:
+                    "#ff86f0",
 
-            <h3>Equipements</h3>
+                content: `
 
-            <p>
-            • Aménagements / rangements à définir <br>
-            </p>
-        `
-    },
+                    <h2>
+                        Entrée
+                    </h2>
 
-    "laverie": {
-        name: "Laverie",
-        x: 64,
-        y: 48,
-        color: "#20c997",
 
-       content: `
+                    <h3>
+                        Revêtements
+                    </h3>
 
-            <h2>Laverie</h2>
+                    <p>
+                        • Sol : ragréage <br>
+                        • Plinthes : pas de plinthe <br>
+                        • Peintures :
+                        seront définies sur chantier lors
+                        d’une réunion
+                    </p>
 
-            <h3>Revêtements</h3>
+                `
 
-            <p>
-            • Sol : Carrelage à définir <br>
-            • Plinthes : Assorties au carrelage <br>
-            • Peintures : seront définies sur chantier lors d’une réunion
-            </p>
+            }
 
-            <h3>Equipements</h3>
+        }
 
-            <p>
-            • Aménagements / rangements à définir <br>
-            • Évier / bac de lavage : à définir <br>
-            • Robinetterie : à définir <br>
-            • Plan de travail / crédence : à définir
-            </p>
-
-        `        
-    },
-
-    "local-technique": {
-        name: "Local technique",
-        x: 65,
-        y: 40,
-        color: "#6c757d",
-        
-        content: `
-
-            <h2>Local technique</h2>
-
-            <h3>Revêtements</h3>
-
-            <p>
-            • Sol : Carrelage à définir <br>
-            • Plinthes : Assorties au carrelage <br>
-            • Peintures : seront définies sur chantier lors d’une réunion
-            </p>
-
-        `
-    },
-    
-
-    "salle-eau-7": {
-        name: "Salle d'eau 7",
-        x: 57,
-        y: 27,
-        color: "#fd7e14",
-
-        content: `
-
-            <h2>Salle d'eau 7</h2>
-
-            <h3>Sanitaires</h3>
-
-            <p>
-            • Nombre de vasques : 1 <br>
-            • Modèle de vasque : à définir <br>
-            • Meuble vasque : à définir <br>
-            • Nombre de robinets : 1 <br>
-            • Modèle de robinetterie : à définir <br>
-            • Miroir : à définir <br>
-            • Miroir rétroéclairé ou applique : à définir
-            </p>
-
-            <h3>Douche</h3>
-
-            <p>
-            • Receveur : à définir <br>
-            • Robinetterie de douche : à définir <br>
-            • Douchette et/ou douche de tête : à définir <br>
-            • Paroi et porte de douche : à définir <br>
-            • Niche : à confirmer 
-            </p>
-
-            <h3>Revêtements</h3>
-
-            <p>
-            • Sol : Carrelage à définir <br>
-            • Plinthes : Assorties au carrelage <br>
-            • Peintures / papiers peints : seront définies sur chantier lors d’une réunion
-            • Faïence murale : à définir
-            • Zones faïencées / hauteur : à définir
-
-            </p>
-
-            <h3>Accessoires</h3>
-
-            <p>
-            • Sèche-serviettes : à définir
-            </p>
-
-        ` 
     },
 
 
-    "dgt-1": {
-        name: "Dgt 1",
-        x: 56,
-        y: 40,
-        color: "#d3e417",
+    /* =====================================================
+       R+1
+       ===================================================== */
 
-        content: `
+    r1: {
 
-            <h2>Dgt 1</h2>
+        name:
+            "R+1",
 
-            <h3>Revêtements</h3>
+        image:
+            "plan-r1-ind2-2026-07-02.png",
 
-            <p>
-            • Sol : Carrelage à définir <br>
-            • Plinthes : Assorties au carrelage <br>
-            • Peintures / papiers peints : seront définies sur chantier lors d’une réunion
-            </p>
+        rooms: {
 
-        `
-    },
 
-    "dortoir": {
-        name: "Dortoir",
-        x: 63,
-        y: 30,
-        color: "#e43917",
+            /*
+             * AJOUTER ICI LES PIECES DU R+1
+             *
+             * Exemple :
+             *
+             * "chambre-2": {
+             *
+             *     name: "Chambre 2",
+             *     x: 50,
+             *     y: 40,
+             *     color: "#ff0000",
+             *
+             *     content: `
+             *
+             *         <h2>Chambre 2</h2>
+             *
+             *         ...
+             *
+             *     `
+             * }
+             *
+             */
 
-        content: `
+        }
 
-            <h2>Dortoir</h2>
-
-            <h3>Revêtements</h3>
-
-            <p>
-            • Sol : Carrelage à définir <br>
-            • Plinthes : Assorties au carrelage <br>
-            • Peintures / papiers peints : seront définies sur chantier lors d’une réunion
-            </p>
-
-            <h3>Equipements</h3>
-
-            <p>
-            • Agencements de placards et façades de placards : à définir  <br>
-            • Store intérieur : à définir
-            </p>
-
-        `        
-    },
-
-    "garage": {
-        name: "Garage",
-        x: 55,
-        y: 63,
-        color: "#79e70d",
-
-        content: `
-
-            <h2>Garage</h2>
-
-            <h3>Revêtements</h3>
-
-            <p>
-            • Sol : ragréage <br>
-            • Plinthes : pas de plinthe <br>
-            • Peintures : seront définies sur chantier lors d’une réunion
-            </p>
-        `        
     }
-    
-    /* AJOUTE TES NOUVELLES PIÈCES ICI en rajoutant une virgule après } de la pièce précédente */
 
 };
+
+
+/* =========================================================
+   ETAGE ACTUEL
+   ========================================================= */
+
+let currentFloor =
+    "rdc";
 
 
 /* =========================================================
@@ -844,6 +1215,12 @@ const closeButton =
     );
 
 
+const floorButtons =
+    document.querySelectorAll(
+        ".floor-button"
+    );
+
+
 /* =========================================================
    DIMENSIONS IMAGE
    ========================================================= */
@@ -873,21 +1250,30 @@ const MAX_SCALE =
 
 
 /* =========================================================
-   CRÉATION AUTOMATIQUE DES PASTILLES
+   PASTILLES
    ========================================================= */
 
 const hotspotElements = {};
 
 
+/* =========================================================
+   CREATION DES PASTILLES
+   ========================================================= */
+
 function createHotspots() {
 
 
-    Object.keys(rooms).forEach(
+    hotspotLayer.innerHTML = "";
+
+
+    Object.keys(
+        floors[currentFloor].rooms
+    ).forEach(
         function(id) {
 
 
             const room =
-                rooms[id];
+                floors[currentFloor].rooms[id];
 
 
             const hotspot =
@@ -921,10 +1307,6 @@ function createHotspots() {
                 hotspot;
 
 
-            /*
-             * Clic souris
-             */
-
             hotspot.addEventListener(
                 "click",
                 function(event) {
@@ -943,39 +1325,108 @@ function createHotspots() {
 
 
 /* =========================================================
-   CHARGEMENT IMAGE
+   CHARGEMENT D'UN ETAGE
    ========================================================= */
 
-plan.onload =
-    function() {
+function loadFloor(
+    floorId
+) {
 
 
-        imageWidth =
-            plan.naturalWidth;
+    const floor =
+        floors[floorId];
 
 
-        imageHeight =
-            plan.naturalHeight;
+    if (!floor) {
+
+        return;
+
+    }
 
 
-        /*
-         * On utilise la résolution
-         * originale du PNG.
-         */
-
-        plan.width =
-            imageWidth;
+    currentFloor =
+        floorId;
 
 
-        plan.height =
-            imageHeight;
+    closeInfo();
 
 
-        createHotspots();
+    floorButtons.forEach(
+        function(button) {
 
-        fitPlan();
+            button.classList.toggle(
+                "active",
+                button.dataset.floor ===
+                floorId
+            );
 
-    };
+        }
+    );
+
+
+    /*
+     * On supprime les anciennes pastilles.
+     */
+
+    hotspotLayer.innerHTML = "";
+
+
+    /*
+     * Nouvelle image.
+     */
+
+    plan.onload =
+        function() {
+
+
+            imageWidth =
+                plan.naturalWidth;
+
+
+            imageHeight =
+                plan.naturalHeight;
+
+
+            /*
+             * On conserve la résolution
+             * native de l'image.
+             */
+
+            plan.width =
+                imageWidth;
+
+
+            plan.height =
+                imageHeight;
+
+
+            createHotspots();
+
+
+            fitPlan();
+
+        };
+
+
+    plan.src =
+        floor.image;
+
+
+    /*
+     * Si l'image est déjà dans le cache
+     * du navigateur, on force le traitement.
+     */
+
+    if (
+        plan.complete &&
+        plan.naturalWidth > 0
+    ) {
+
+        plan.onload();
+
+    }
+
+}
 
 
 /* =========================================================
@@ -1032,7 +1483,7 @@ function fitPlan() {
 
 
 /* =========================================================
-   MISE À JOUR PLAN
+   MISE A JOUR DU PLAN
    ========================================================= */
 
 function updatePlan() {
@@ -1061,6 +1512,10 @@ function updatePlan() {
 function updateHotspots() {
 
 
+    const rooms =
+        floors[currentFloor].rooms;
+
+
     Object.keys(rooms).forEach(
         function(id) {
 
@@ -1081,7 +1536,7 @@ function updateHotspots() {
 
 
             /*
-             * Coordonnées sur l'image
+             * Coordonnées sur l'image.
              */
 
             const imageX =
@@ -1097,7 +1552,7 @@ function updateHotspots() {
 
 
             /*
-             * Coordonnées écran
+             * Coordonnées écran.
              */
 
             const screenX =
@@ -1226,6 +1681,23 @@ viewer.addEventListener(
         if (
             event.target.closest(
                 ".hotspot"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        /*
+         * Ne pas déplacer le plan lorsque
+         * l'utilisateur clique sur le sélecteur
+         * d'étage.
+         */
+
+        if (
+            event.target.closest(
+                "#floorSelector"
             )
         ) {
 
@@ -1556,7 +2028,7 @@ viewer.addEventListener(
 
 
         /*
-         * DÉPLACEMENT
+         * DEPLACEMENT
          */
 
         if (
@@ -1618,8 +2090,7 @@ viewer.addEventListener(
 
         /*
          * Si le doigt n'a presque pas bougé,
-         * on considère qu'il s'agit d'un clic
-         * sur une pastille.
+         * on recherche une pastille.
          */
 
         if (
@@ -1670,7 +2141,6 @@ viewer.addEventListener(
 
             touchInitialOffsetY =
                 offsetY;
-
 
         }
         else {
@@ -1733,6 +2203,10 @@ function findHotspotAt(
 
     let bestDistance =
         Infinity;
+
+
+    const rooms =
+        floors[currentFloor].rooms;
 
 
     Object.keys(rooms).forEach(
@@ -1805,9 +2279,7 @@ function findHotspotAt(
     );
 
 
-    if (
-        selected
-    ) {
+    if (selected) {
 
         showInfo(
             selected
@@ -1818,18 +2290,41 @@ function findHotspotAt(
 }
 
 
+/* =========================================================
+   CONTENU DE LA FICHE
+   ========================================================= */
 
-function getInfoContent(id) {
+function getInfoContent(
+    id
+) {
 
-    const room = rooms[id];
+
+    const room =
+        floors[currentFloor].rooms[id];
+
 
     if (!room) {
-        return "<p>Informations indisponibles.</p>";
+
+        return `
+            <p>
+                Informations indisponibles.
+            </p>
+        `;
+
     }
 
+
     return room.content || `
-        <h2>${room.name}</h2>
-        <p>Aucune information renseignée pour cette pièce.</p>
+
+        <h2>
+            ${room.name}
+        </h2>
+
+        <p>
+            Aucune information renseignée
+            pour cette pièce.
+        </p>
+
     `;
 
 }
@@ -1839,10 +2334,14 @@ function getInfoContent(id) {
    OUVERTURE FICHE
    ========================================================= */
 
-function showInfo(id) {
+function showInfo(
+    id
+) {
+
 
     infoContent.innerHTML =
         getInfoContent(id);
+
 
     infoBox.style.display =
         "block";
@@ -1896,6 +2395,47 @@ document.addEventListener(
 
 
 /* =========================================================
+   CHANGEMENT D'ETAGE
+   ========================================================= */
+
+floorButtons.forEach(
+    function(button) {
+
+
+        button.addEventListener(
+            "click",
+            function(event) {
+
+
+                event.stopPropagation();
+
+
+                const floorId =
+                    button.dataset.floor;
+
+
+                if (
+                    floorId ===
+                    currentFloor
+                ) {
+
+                    return;
+
+                }
+
+
+                loadFloor(
+                    floorId
+                );
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
    REDIMENSIONNEMENT
    ========================================================= */
 
@@ -1908,9 +2448,17 @@ window.addEventListener(
     }
 );
 
+
+/* =========================================================
+   INITIALISATION
+   ========================================================= */
+
+loadFloor(
+    "rdc"
+);
+
 </script>
 
 </body>
 
 </html>
-```
